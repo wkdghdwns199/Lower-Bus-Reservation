@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from "react";
+import LoginPage from "./component/LoginPage";
+import LoggedPage from "./component/LoggedPage";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [loggedIn, setLoggedIn] = useState(false)
+    const handleLogin = () => {
+        loggedIn ? handleLogout() : handleStoreSession();
+    }
+
+    const handleLogout = () => {
+        setLoggedIn(false);
+        sessionStorage.clear();
+    }
+
+    const handleStoreSession = () => {
+        setLoggedIn(true);
+        sessionStorage.setItem('loginStatus', 'true');
+        sessionStorage.setItem('currentPage', 'main')
+    }
+    return (
+        <div>
+            {(loggedIn || sessionStorage.getItem('loginStatus') === 'true') ? (
+                <LoggedPage onLogin={handleLogin}/>
+            ) : (
+                <LoginPage onLogin={handleLogin} />
+            )}
+        </div>
+    );
 }
 
 export default App;
