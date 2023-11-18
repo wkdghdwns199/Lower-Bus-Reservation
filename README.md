@@ -1,1 +1,1 @@
-# Lower-Bus-Reservation
+# 피우다 프로젝트 공모전 - 저상 버스 예약 서비스
