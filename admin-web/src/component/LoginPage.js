@@ -24,12 +24,40 @@ function LoginPage({onLogin}) {
             }
 
             if (data && data[0].admin_pw === SHA256(inputPw).toString()) {
+
+                try{
+                    const {data, error} = await supabase
+                        .from('admin_user')
+                        .select('login_status')
+                        .eq('admin_id', inputId)
+
+                    if (error) {
+                        alert('로그인 현황을 가져올 수 없습니다.');
+                        sessionStorage.clear();
+                        return ;
+                    }
+
+                    if (data[0].login_status === true){
+                        alert('로그인을 한 디바이스가 있어서 로그인 할 수 없습니다.');
+                        sessionStorage.clear();
+                        return ;
+                    }
+                }
+                catch (error){
+                    alert('로그인 현황을 가져올 수 없습니다.');
+                    sessionStorage.clear();
+                    return ;
+
+                }
+
+                sessionStorage.setItem('adminId', inputId);
+                alert('사용을 다 하시면 반드시 로그아웃을 하셔야 합니다! [보안 사유]');
                 alert('로그인 성공! ' + createCurrentDateString());
 
                 try{
                     const {error} = await supabase
                         .from('admin_user')
-                        .update({login_date_time : createCurrentDateString()})
+                        .update({login_date_time : createCurrentDateString(), login_status : true})
                         .eq('admin_id', inputId)
                 }
                 catch (error){
