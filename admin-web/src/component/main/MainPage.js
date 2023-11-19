@@ -8,19 +8,43 @@ import BusRegisterModal from "./BusRegisterModal";
 function MainPage({onLogin, setCurrentPage}) {
     const [busList, setBusList] = useState([]);
     const [busRegisterModalStatus, setBusRegisterModalStatus] = useState(false);
+
     const getSupabaseBusList = async () => {
         try {
-            const {data, error} = await supabase
+            const { data, error } = await supabase
                 .from('bus_information')
-                .select('*')
+                .select('*');
 
             if (error) {
+                alert('버스 리스트를 가져올 수 없습니다!');
                 throw error;
             }
-            var tempList = []
-            data.map(busInfo => tempList.push(busInfo))
+
+            // 비동기 함수를 순차적으로 실행하기 위해 for...of 루프 사용
+            const tempList = [];
+            for (const busInfo of data) {
+                try {
+                    const { data: reservationData, error: reservationError } = await supabase
+                        .from('bus_reservation')
+                        .select('*')
+                        .eq('reservation_bus_code', busInfo.bus_code);
+
+                    if (reservationError) {
+                        return;
+                    }
+
+                    console.log(reservationData.length);
+                    const tempJson = { ...busInfo, count: reservationData.length };
+                    tempList.push(tempJson);
+                } catch (error) {
+                    console.error('데이터 오류:', error.message);
+                    return;
+                }
+            }
+
             return tempList;
         } catch (error) {
+            alert('버스 리스트를 가져올 수 없습니다!');
             console.error('데이터 오류:', error.message);
             return [];
         }
@@ -28,9 +52,12 @@ function MainPage({onLogin, setCurrentPage}) {
 
     useEffect(() => {
         getSupabaseBusList()
-            .then(res => setBusList(res));
-        console.log(busList);
+            .then(res => {
+                setBusList(res)
+                console.log(res)
+            })
     }, []);
+
 
     const updateBusList = () => {
         getSupabaseBusList()
@@ -69,7 +96,7 @@ function MainPage({onLogin, setCurrentPage}) {
                                 <td>{busInfo.id}</td>
                                 <td>{busInfo.bus_code}</td>
                                 <td>{busInfo.bus_line}</td>
-                                <td>아직 구현 안 함</td>
+                                <td>{busInfo.count}</td>
                             </tr>
                         ))}
                         </tbody>
