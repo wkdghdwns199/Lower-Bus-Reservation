@@ -8,10 +8,21 @@ import BusRegisterModal from "./BusRegisterModal";
 function MainPage({onLogin, setCurrentPage}) {
     const [busList, setBusList] = useState([]);
     const [busRegisterModalStatus, setBusRegisterModalStatus] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
 
+    // Checkbox의 선택 여부를 토글하는 함수
+    const toggleCheckbox = (value) => {
+        if (selectedItems.includes(value)) {
+            // 이미 선택된 항목이면 제거
+            setSelectedItems(selectedItems.filter(item => item !== value));
+        } else {
+            // 선택되지 않은 항목이면 추가
+            setSelectedItems([...selectedItems, value]);
+        }
+    }
     const getSupabaseBusList = async () => {
         try {
-            const { data, error } = await supabase
+            const {data, error} = await supabase
                 .from('bus_information')
                 .select('*');
 
@@ -24,7 +35,7 @@ function MainPage({onLogin, setCurrentPage}) {
             const tempList = [];
             for (const busInfo of data) {
                 try {
-                    const { data: reservationData, error: reservationError } = await supabase
+                    const {data: reservationData, error: reservationError} = await supabase
                         .from('bus_reservation')
                         .select('*')
                         .eq('reservation_bus_code', busInfo.bus_code);
@@ -34,7 +45,7 @@ function MainPage({onLogin, setCurrentPage}) {
                     }
 
                     console.log(reservationData.length);
-                    const tempJson = { ...busInfo, count: reservationData.length };
+                    const tempJson = {...busInfo, count: reservationData.length};
                     tempList.push(tempJson);
                 } catch (error) {
                     console.error('데이터 오류:', error.message);
@@ -64,6 +75,36 @@ function MainPage({onLogin, setCurrentPage}) {
             .then(res => setBusList(res));
     }
 
+    const confirmDelete = () => {
+        window.confirm('선택한 버스들을 삭제하시겠습니까?', deleteBus(),
+            () => {
+                return;
+            })
+
+    }
+    const deleteBus = async () => {
+        for (const busCode of selectedItems) {
+            console.log(busCode)
+            try {
+                const {error: deleteError} = await supabase
+                    .from('bus_information')
+                    .delete()
+                    .eq('bus_code', busCode)
+
+                if (deleteError) {
+                    alert('데이터 삭제에 실패했습니다!');
+                }
+
+            } catch (error) {
+                console.error('데이터 오류:', error.message);
+                return;
+            }
+        }
+        alert('삭제에 성공했습니다!');
+        setSelectedItems([]);
+        updateBusList()
+    }
+
     return (
         <div>
             <div style={headerTitleStyle}>
@@ -84,6 +125,7 @@ function MainPage({onLogin, setCurrentPage}) {
                     <table style={busListTable}>
                         <thead>
                         <tr>
+                            <TableHead></TableHead>
                             <TableHead>순번</TableHead>
                             <TableHead>차량 코드</TableHead>
                             <TableHead>차량 노선 번호</TableHead>
@@ -93,6 +135,12 @@ function MainPage({onLogin, setCurrentPage}) {
                         <tbody>
                         {busList.map((busInfo) => (
                             <tr key={busInfo.id} style={busListTableTuple}>
+                                <td><input
+                                    type="checkbox"
+                                    value={busInfo.bus_code}
+                                    checked={selectedItems.includes(busInfo.bus_code)}
+                                    onChange={() => toggleCheckbox(busInfo.bus_code)}
+                                /></td>
                                 <td>{busInfo.id}</td>
                                 <td>{busInfo.bus_code}</td>
                                 <td>{busInfo.bus_line}</td>
@@ -103,7 +151,7 @@ function MainPage({onLogin, setCurrentPage}) {
                     </table>
                 </div>
                 <div style={buttonContainer}>
-                    <button style={busDeleteButton}>삭제</button>
+                    <button style={busDeleteButton} onClick={() => confirmDelete()}>삭제</button>
                     <button style={busRegisterButton} onClick={() => setBusRegisterModalStatus(true)}>등록</button>
                 </div>
             </CenteredContainer>

@@ -16,6 +16,41 @@ function BusDriverPage({onLogin, setCurrentPage}) {
     const [driverCompany, setDriverCompany] = useState('');
     const [driverLicenseCode, setDriverLicenseCode] = useState('');
 
+    const [selectedWaitDriver, setSelectedWaitDriver] = useState([]);
+    const [selectedAuthDriver, setSelectedAuthDriver] = useState([]);
+    const [selectedRejectDriver, setSelectedRejectDriver] = useState([]);
+
+
+    const toggleWaitCheckbox = (value) => {
+        if (selectedWaitDriver.includes(value)) {
+            // 이미 선택된 항목이면 제거
+            setSelectedWaitDriver(selectedWaitDriver.filter(item => item !== value));
+        } else {
+            // 선택되지 않은 항목이면 추가
+            setSelectedWaitDriver([...selectedWaitDriver, value]);
+        }
+    }
+
+    const toggleAuthCheckbox = (value) => {
+        if (selectedAuthDriver.includes(value)) {
+            // 이미 선택된 항목이면 제거
+            setSelectedAuthDriver(selectedAuthDriver.filter(item => item !== value));
+        } else {
+            // 선택되지 않은 항목이면 추가
+            setSelectedAuthDriver([...selectedAuthDriver, value]);
+        }
+    }
+
+    const toggleRejectCheckbox = (value) => {
+        if (selectedRejectDriver.includes(value)) {
+            // 이미 선택된 항목이면 제거
+            setSelectedRejectDriver(selectedRejectDriver.filter(item => item !== value));
+        } else {
+            // 선택되지 않은 항목이면 추가
+            setSelectedRejectDriver([...selectedRejectDriver, value]);
+        }
+    }
+
     const getSupabaseDriverList = async () => {
         try {
             const {data, error} = await supabase
@@ -73,6 +108,103 @@ function BusDriverPage({onLogin, setCurrentPage}) {
         }
     }
 
+    const deleteWaitBusDriver = async () => {
+        for (const id of selectedWaitDriver) {
+            console.log(id)
+            try {
+                const {error: deleteError} = await supabase
+                    .from('bus_driver_info')
+                    .delete()
+                    .eq('id', id)
+
+                if (deleteError) {
+                    alert('데이터 삭제에 실패했습니다!');
+                }
+
+            } catch (error) {
+                console.error('데이터 오류:', error.message);
+                return;
+            }
+        }
+        alert('삭제에 성공했습니다!');
+        setSelectedWaitDriver([]);
+        updateDriverList()
+    }
+
+    const confirmWaitDelete = () => {
+        console.log(selectedWaitDriver);
+        window.confirm('선택한 버스 기사님 정보를 삭제하시겠습니까?',
+        deleteWaitBusDriver(),
+            () => {
+                return;
+            } )
+    }
+
+    const deleteAuthBusDriver = async () => {
+        for (const id of selectedAuthDriver) {
+            console.log(id)
+            try {
+                const {error: deleteError} = await supabase
+                    .from('bus_driver_info')
+                    .delete()
+                    .eq('id', id)
+
+                if (deleteError) {
+                    alert('데이터 삭제에 실패했습니다!');
+                }
+
+            } catch (error) {
+                console.error('데이터 오류:', error.message);
+                return;
+            }
+        }
+        alert('삭제에 성공했습니다!');
+        setSelectedAuthDriver([]);
+        updateDriverList()
+    }
+
+    const confirmAuthDelete = () => {
+        console.log(selectedWaitDriver);
+        window.confirm('선택한 버스 기사님 정보를 삭제하시겠습니까?',
+            deleteAuthBusDriver(),
+            () => {
+                return;
+            } )
+    }
+
+    const deleteRejectBusDriver = async () => {
+        for (const id of selectedRejectDriver) {
+            console.log(id)
+            try {
+                const {error: deleteError} = await supabase
+                    .from('bus_driver_info')
+                    .delete()
+                    .eq('id', id)
+
+                if (deleteError) {
+                    alert('데이터 삭제에 실패했습니다!');
+                }
+
+            } catch (error) {
+                console.error('데이터 오류:', error.message);
+                return;
+            }
+        }
+        alert('삭제에 성공했습니다!');
+        setSelectedRejectDriver([]);
+        updateDriverList()
+    }
+
+    const confirmRejectDelete = () => {
+        console.log(selectedRejectDriver);
+        window.confirm('선택한 버스 기사님 정보를 삭제하시겠습니까?',
+            deleteRejectBusDriver(),
+            () => {
+                return;
+            } )
+    }
+
+
     useEffect(() => {
         getSupabaseDriverList()
             .then(res => setDriverList(res));
@@ -117,6 +249,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     <table style={driverListTable}>
                         <thead>
                         <tr>
+                            <TableHead></TableHead>
                             <TableHead>이름</TableHead>
                             <TableHead>아이디</TableHead>
                             <TableHead>운수 회사</TableHead>
@@ -127,6 +260,14 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                         <tbody>
                         {driverList.map((driverInfo) => (
                             <tr key={driverInfo.id} style={driverListTableTuple}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        value={driverInfo.id}
+                                        checked={selectedWaitDriver.includes(driverInfo.id)}
+                                        onChange={() => toggleWaitCheckbox(driverInfo.id)}
+                                    />
+                                </td>
                                 <td>{driverInfo.bus_driver_name}</td>
                                 <td>{driverInfo.bus_driver_id}</td>
                                 <td>{driverInfo.bus_driver_company}</td>
@@ -148,7 +289,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     </table>
                 </div>
                 <div style={buttonContainer}>
-                    <button style={driverDeleteButton}>삭제</button>
+                    <button style={driverDeleteButton } onClick={() => confirmWaitDelete()}>삭제</button>
                 </div>
             </CenteredContainer>
             <br/>
@@ -163,6 +304,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     <table style={driverListTable}>
                         <thead>
                         <tr>
+                            <TableHead></TableHead>
                             <TableHead>이름</TableHead>
                             <TableHead>아이디</TableHead>
                             <TableHead>운수 회사</TableHead>
@@ -173,6 +315,12 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                         <tbody>
                         {driverRegisterList.map((driverInfo) => (
                             <tr key={driverInfo.id} style={driverListTableTuple}>
+                                <td><input
+                                    type="checkbox"
+                                    value={driverInfo.id}
+                                    checked={selectedAuthDriver.includes(driverInfo.id)}
+                                    onChange={() => toggleAuthCheckbox(driverInfo.id)}
+                                /></td>
                                 <td>{driverInfo.bus_driver_name}</td>
                                 <td>{driverInfo.bus_driver_id}</td>
                                 <td>{driverInfo.bus_driver_company}</td>
@@ -184,7 +332,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     </table>
                 </div>
                 <div style={buttonContainer}>
-                    <button style={driverDeleteButton}>삭제</button>
+                    <button style={driverDeleteButton} onClick={() => confirmAuthDelete()}>삭제</button>
                 </div>
             </CenteredContainer>
             <br/>
@@ -199,6 +347,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     <table style={driverListTable}>
                         <thead>
                         <tr>
+                            <TableHead></TableHead>
                             <TableHead>이름</TableHead>
                             <TableHead>아이디</TableHead>
                             <TableHead>운수 회사</TableHead>
@@ -209,6 +358,12 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                         <tbody>
                         {driverRejectList.map((driverInfo) => (
                             <tr key={driverInfo.id} style={driverListTableTuple}>
+                                <td><input
+                                    type="checkbox"
+                                    value={driverInfo.id}
+                                    checked={selectedRejectDriver.includes(driverInfo.id)}
+                                    onChange={() => toggleRejectCheckbox(driverInfo.id)}
+                                /></td>
                                 <td>{driverInfo.bus_driver_name}</td>
                                 <td>{driverInfo.bus_driver_id}</td>
                                 <td>{driverInfo.bus_driver_company}</td>
@@ -220,7 +375,7 @@ function BusDriverPage({onLogin, setCurrentPage}) {
                     </table>
                 </div>
                 <div style={buttonContainer}>
-                    <button style={driverDeleteButton}>삭제</button>
+                    <button style={driverDeleteButton} onClick={() => confirmRejectDelete()}>삭제</button>
                 </div>
             </CenteredContainer>
 

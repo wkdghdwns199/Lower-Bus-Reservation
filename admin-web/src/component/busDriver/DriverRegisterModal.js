@@ -12,7 +12,8 @@ function DriverRegisterModal({
                                  driverBirthDate,
                              }) {
 
-    const [rejectReason, setRejectReason] = useState('');
+
+
 
     const registerDriver = async () => {
         try {
