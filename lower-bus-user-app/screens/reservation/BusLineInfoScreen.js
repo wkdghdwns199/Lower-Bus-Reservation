@@ -5,10 +5,40 @@ import Header from "../../component/Header";
 
 const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
     const [busStationList, setBusStationList] = useState([])
+    const [busLocationList, setBusLocationList] = useState([])
+    const [busStopStatusList, setBusStopStatusList] = useState([])
+    const [busArrivalTimeList, setBusArriavalTimeList] = useState([]);
+    const busRouteAPIKey = process.env.BUS_ROUTE_API_KEY;
+    const busLocationAPIKey = process.env.BUS_LOCATION_API_KEY;
     const getBusLineStopList = async () => {
         try {
-            const response = await axios.get('http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey=1SFO0X6QswV8GtusD6ByZlTaiYocBE0nVmhbmoNTb3mUPc%2FUEDJtNbgO6pexMnb8Y%2BuGwXcfUjw9ZJYMPUl2RQ%3D%3D&busRouteId=' + reservationBusLine.route_id + '&resultType=json');
+            const response = await axios.get(
+                'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey='
+                + busRouteAPIKey + '&busRouteId='
+                + reservationBusLine.route_id
+                + '&resultType=json');
             setBusStationList(response.data.msgBody.itemList)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getBusLocationList = async () => {
+        try {
+            const response = await axios.get(
+                'http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey='
+                + busLocationAPIKey
+                + '&busRouteId='
+                + reservationBusLine.route_id
+                + '&resultType=json'
+            )
+            if (response.data.msgBody.itemList === null) {
+                alert('금일 저상 버스 운행이 종료된 노선입니다.')
+                setBusLocationList([])
+                return []
+            }
+            setBusLocationList(response.data.msgBody.itemList)
+            return response.data.msgBody.itemList;
         } catch (error) {
             console.log(error)
         }
@@ -16,6 +46,24 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
 
     useEffect(() => {
         getBusLineStopList()
+        getBusLocationList()
+            .then(res => {
+                var tempLocationList = []
+                var tempStopStatusList = []
+                var tempBusArrivalTimeList = []
+                var minString = ""
+                var secString = "";
+                res.map(busLocationInfo => {
+                    tempLocationList.push(busLocationInfo.sectOrd)
+                    tempStopStatusList.push(busLocationInfo.stopFlag)
+                    Math.round(busLocationInfo.nextStTm / 60) != 0 ? minString = Math.round(busLocationInfo.nextStTm / 60) + '분' : minString = ''
+                    busLocationInfo.nextStTm % 60 != 0 ? secString = busLocationInfo.nextStTm % 60 + '초' : secString = ''
+                    tempBusArrivalTimeList.push(minString + ' ' + secString + ' 후 도착')
+                })
+                setBusLocationList(tempLocationList);
+                setBusStopStatusList(tempStopStatusList);
+                setBusArriavalTimeList(tempBusArrivalTimeList);
+            })
         const backAction = () => {
             setCurrentScreen('main');
             return true;
@@ -45,11 +93,23 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 keyExtractor={(item) => item.seq.toString()}
                 renderItem={({item}) => (
                     <Pressable style={styles.itemContainer} onPress={() => {
-
+                        console.log(item.seq);
+                        console.log(reservationBusLine.route_id)
                     }}>
+                        {busLocationList.includes(item.seq) ? (
+                            <Image source={require('../../assets/images/busIcon.png')}
+                                   style={{
+                                       backgroundColor: 'white',
+                                       position: 'absolute',
+                                       top: (busStopStatusList[busLocationList.indexOf(item.seq)] == 1 ? 15 : 50),
+                                       zIndex: 4,
+                                       height: 30,
+                                       width: 30
+                                   }}/>) : null}
+
                         <Image source={require('../../assets/images/busStationIcon.png')}
                                style={{height: 15, width: 15}}/>
-                        { busStationList.length != item.seq ? (
+                        {busStationList.length != item.seq ? (
                             <Image source={require('../../assets/images/busLine.png')}
                                    style={{
                                        position: 'absolute',
@@ -60,7 +120,17 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                                        width: 6
                                    }}/>) : null}
 
-                        <Text style={styles.item}>{item.stationNm}</Text>
+                        <Text
+                            style={styles.item}>{item.stationNm.length >= 16 ? item.stationNm.substring(0, 12) + '...' : item.stationNm}</Text>
+                        {busLocationList.includes((item.seq)) && busStopStatusList[busLocationList.indexOf(item.seq) + 1] != 1 ? (
+                            <Text style={{
+                                fontSize: 12,
+                                color: 'red',
+                                position: 'absolute',
+                                right: 0,
+                                bottom: 0,
+                            }}>{busArrivalTimeList[busLocationList.indexOf(item.seq)]}</Text>) : null}
+
                     </Pressable>
                 )}
             />
