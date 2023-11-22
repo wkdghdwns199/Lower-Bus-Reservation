@@ -8,8 +8,8 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
     const [busLocationList, setBusLocationList] = useState([])
     const [busStopStatusList, setBusStopStatusList] = useState([])
     const [busArrivalTimeList, setBusArriavalTimeList] = useState([]);
-    const busRouteAPIKey = process.env.BUS_ROUTE_API_KEY;
-    const busLocationAPIKey = process.env.BUS_LOCATION_API_KEY;
+    const busRouteAPIKey = process.env.EXPO_PUBLIC_BUS_ROUTE_API_KEY;
+    const busLocationAPIKey = process.env.EXPO_PUBLIC_BUS_LOCATION_API_KEY;
 
     const getBusLineStopList = async () => {
         try {
