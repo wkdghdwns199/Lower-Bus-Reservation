@@ -10,6 +10,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
     const [busArrivalTimeList, setBusArriavalTimeList] = useState([]);
     const busRouteAPIKey = process.env.BUS_ROUTE_API_KEY;
     const busLocationAPIKey = process.env.BUS_LOCATION_API_KEY;
+
     const getBusLineStopList = async () => {
         try {
             const response = await axios.get(
@@ -43,9 +44,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
             console.log(error)
         }
     }
-
-    useEffect(() => {
-        getBusLineStopList()
+    const getBusLocation = () => {
         getBusLocationList()
             .then(res => {
                 var tempLocationList = []
@@ -54,16 +53,56 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 var minString = ""
                 var secString = "";
                 res.map(busLocationInfo => {
-                    tempLocationList.push(busLocationInfo.sectOrd)
+                    var calculateArrivalTime = (busLocationInfo.nextStTm - (busLocationInfo.nextStTm * (busLocationInfo.sectDist / busLocationInfo.fullSectDist)))
+                    tempLocationList.push((busLocationInfo.sectOrd))
                     tempStopStatusList.push(busLocationInfo.stopFlag)
-                    Math.round(busLocationInfo.nextStTm / 60) != 0 ? minString = Math.round(busLocationInfo.nextStTm / 60) + '분' : minString = ''
-                    busLocationInfo.nextStTm % 60 != 0 ? secString = busLocationInfo.nextStTm % 60 + '초' : secString = ''
-                    tempBusArrivalTimeList.push(minString + ' ' + secString + ' 후 도착')
+                    Math.round(calculateArrivalTime / 60) !== 0 ? minString = Math.round(calculateArrivalTime / 60) + '분' : minString = '0분'
+                    Math.round(calculateArrivalTime % 60) !== 0 ? secString = Math.round(calculateArrivalTime % 60) + '초' : secString = '0초'
+
+                    minString === '0분' && secString === '0초' ? tempBusArrivalTimeList.push('곧 도착') : tempBusArrivalTimeList.push(minString + ' ' + secString + ' 후 도착')
                 })
+
                 setBusLocationList(tempLocationList);
                 setBusStopStatusList(tempStopStatusList);
                 setBusArriavalTimeList(tempBusArrivalTimeList);
             })
+    }
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // 현재 count 값에 1을 더한 값을 새로운 상태로 설정
+            var tempList = []
+            busArrivalTimeList.map(time => {
+                if (time !== '곧 도착'){
+                    var minute = time.split('분')[0]
+                    var second = time.split('분')[1].split('초')[0]
+                }
+
+                if (second == 0) {
+                    if (minute ==0) {
+                        getBusLineStopList()
+                        getBusLocation()
+                    }
+                    else {
+                        tempList.push((minute-1) + '분 ' + (parseInt(second)+59) + '초 후 도착');
+                    }
+                }
+                else {
+                    tempList.push(minute + '분 ' + (second - 1) + '초 후 도착');
+                }
+
+            })
+            setBusArriavalTimeList(tempList);
+        }, 1000);
+
+        // 컴포넌트가 언마운트될 때 clearInterval을 호출하여 메모리 누수를 방지
+        return () => clearInterval(intervalId);
+    },[busArrivalTimeList])
+
+    useEffect(() => {
+        getBusLineStopList()
+        getBusLocation()
+
         const backAction = () => {
             setCurrentScreen('main');
             return true;
@@ -76,8 +115,8 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
             backHandler.remove();
         };
 
-    }, []);
 
+    }, []);
     return (
         <View style={styles.container}>
             <Pressable style={styles.backButton} onPress={() => {
@@ -90,11 +129,10 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
 
             <FlatList
                 data={busStationList}
-                keyExtractor={(item) => item.seq.toString()}
+                keyExtractor={(item) => item.seq}
                 renderItem={({item}) => (
                     <Pressable style={styles.itemContainer} onPress={() => {
-                        console.log(item.seq);
-                        console.log(reservationBusLine.route_id)
+                        console.log(busLocationList.includes((item.seq - 1).toString()));
                     }}>
                         {busLocationList.includes(item.seq) ? (
                             <Image source={require('../../assets/images/busIcon.png')}
@@ -121,15 +159,15 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                                    }}/>) : null}
 
                         <Text
-                            style={styles.item}>{item.stationNm.length >= 16 ? item.stationNm.substring(0, 12) + '...' : item.stationNm}</Text>
-                        {busLocationList.includes((item.seq)) && busStopStatusList[busLocationList.indexOf(item.seq) + 1] != 1 ? (
+                            style={styles.item}>{item.stationNm.length >= 16 ? item.stationNm.substring(0, 15) + '...' : item.stationNm}</Text>
+                        {busLocationList.includes((item.seq - 1).toString()) && busStopStatusList[busLocationList.indexOf((item.seq - 1).toString())] !== 1 ? (
                             <Text style={{
                                 fontSize: 12,
                                 color: 'red',
                                 position: 'absolute',
-                                right: 0,
-                                bottom: 0,
-                            }}>{busArrivalTimeList[busLocationList.indexOf(item.seq)]}</Text>) : null}
+                                right: 30,
+                                top: 50,
+                            }}>{busArrivalTimeList[busLocationList.indexOf((item.seq - 1).toString())]}</Text>) : null}
 
                     </Pressable>
                 )}
