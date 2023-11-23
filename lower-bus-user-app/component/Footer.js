@@ -2,7 +2,7 @@ import {useState} from "react";
 import {StyleSheet, View, Text, Image, Pressable} from "react-native";
 
 const Footer = ({setCurrentScreen}) => {
-    const [busReservationButtonColor, setBusReservationButtonColor] = useState('gray')
+    const [busReservationButtonColor, setBusReservationButtonColor] = useState('#C9EEBC')
     const [mainButtonColor, setMainButtonColor] = useState('white')
     return (
         <View style={styles.footer}>
@@ -10,19 +10,19 @@ const Footer = ({setCurrentScreen}) => {
                        onPress={() => {
                            setCurrentScreen('busReservationList')
                            setBusReservationButtonColor('white')
-                           setMainButtonColor('gray')
+                           setMainButtonColor('#C9EEBC')
                        }}>
-                <Image source={require('../assets/images/historyIcon.png')}
+                <Image source={require('../images/historyIcon.png')}
                        style={{height: 110, width: 110}}/>
                 <Text>예약 내역</Text>
             </Pressable>
             <Pressable style={[styles.footerButton, {backgroundColor: mainButtonColor}]}
                        onPress={() => {
                            setCurrentScreen('main')
-                           setBusReservationButtonColor('gray')
+                           setBusReservationButtonColor('#C9EEBC')
                            setMainButtonColor('white')
                        }}>
-                <Image source={require('../assets/images/homeIcon.png')}
+                <Image source={require('../images/homeIcon.png')}
                        style={{height: 100, width: 100}}/>
                 <Text>홈</Text>
             </Pressable>
