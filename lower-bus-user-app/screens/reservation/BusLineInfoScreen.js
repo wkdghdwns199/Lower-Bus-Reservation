@@ -1,13 +1,14 @@
 import {useEffect, useState} from "react";
-import {View, Text, BackHandler, Pressable, FlatList, StyleSheet, Image} from "react-native";
+import {View, Text, BackHandler, Pressable, FlatList, StyleSheet, Image, Alert} from "react-native";
 import axios from "axios";
 import Header from "../../component/Header";
 
-const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
+const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservationBusCode, setStartStation, setShowReservationModal}) => {
     const [busStationList, setBusStationList] = useState([])
     const [busLocationList, setBusLocationList] = useState([])
     const [busStopStatusList, setBusStopStatusList] = useState([])
-    const [busArrivalTimeList, setBusArriavalTimeList] = useState([]);
+    const [busArrivalTimeList, setBusArrivalTimeList] = useState([]);
+    const [busCodeList, setBusCodeList] = useState([]);
     const busRouteAPIKey = process.env.EXPO_PUBLIC_BUS_ROUTE_API_KEY;
     const busLocationAPIKey = process.env.EXPO_PUBLIC_BUS_LOCATION_API_KEY;
 
@@ -34,7 +35,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 + '&resultType=json'
             )
             if (response.data.msgBody.itemList === null) {
-                alert('금일 저상 버스 운행이 종료된 노선입니다.')
+                Alert.alert('운행 종료','금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
                 return []
             }
@@ -50,12 +51,14 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 var tempLocationList = []
                 var tempStopStatusList = []
                 var tempBusArrivalTimeList = []
+                var tempBusCodeList=[]
                 var minString = ""
                 var secString = "";
                 res.map(busLocationInfo => {
                     var calculateArrivalTime = (busLocationInfo.nextStTm - (busLocationInfo.nextStTm * (busLocationInfo.sectDist / busLocationInfo.fullSectDist)))
                     tempLocationList.push((busLocationInfo.sectOrd))
                     tempStopStatusList.push(busLocationInfo.stopFlag)
+                    tempBusCodeList.push(busLocationInfo.plainNo)
                     Math.round(calculateArrivalTime / 60) !== 0 ? minString = Math.round(calculateArrivalTime / 60) + '분' : minString = '0분'
                     Math.round(calculateArrivalTime % 60) !== 0 ? secString = Math.round(calculateArrivalTime % 60) + '초' : secString = '0초'
 
@@ -64,7 +67,8 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
 
                 setBusLocationList(tempLocationList);
                 setBusStopStatusList(tempStopStatusList);
-                setBusArriavalTimeList(tempBusArrivalTimeList);
+                setBusArrivalTimeList(tempBusArrivalTimeList);
+                setBusCodeList(tempBusCodeList);
             })
     }
 
@@ -92,7 +96,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 }
 
             })
-            setBusArriavalTimeList(tempList);
+            setBusArrivalTimeList(tempList);
         }, 1000);
 
         // 컴포넌트가 언마운트될 때 clearInterval을 호출하여 메모리 누수를 방지
@@ -102,7 +106,6 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
     useEffect(() => {
         getBusLineStopList()
         getBusLocation()
-
         const backAction = () => {
             setCurrentScreen('main');
             return true;
@@ -117,6 +120,26 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
 
 
     }, []);
+
+    const findRunningBus = (reserveLoc, stationNm) => {
+        console.log(busLocationList)
+        while(--reserveLoc){
+            if (busLocationList.includes(reserveLoc.toString())){
+                console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
+                setStartStation(stationNm)
+                setReservationBusCode(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
+                setShowReservationModal(true);
+                return ;
+            }
+        }
+
+        Alert.alert('예약 불가', '정류장에 도착 예정인 버스가 없습니다.');
+        console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
+        // setStartStation(stationNm)
+        // setReservationBusCode('서울75사2644')
+        // setShowReservationModal(true);
+
+    }
     return (
         <View style={styles.container}>
             <Pressable style={styles.backButton} onPress={() => {
@@ -132,7 +155,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                 keyExtractor={(item) => item.seq}
                 renderItem={({item}) => (
                     <Pressable style={styles.itemContainer} onPress={() => {
-                        console.log(busLocationList.includes((item.seq - 1).toString()));
+                        findRunningBus(item.seq, item.stationNm)
                     }}>
                         {busLocationList.includes(item.seq) ? (
                             <Image source={require('../../assets/images/busIcon.png')}
@@ -140,7 +163,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine}) => {
                                        backgroundColor: 'white',
                                        position: 'absolute',
                                        top: (busStopStatusList[busLocationList.indexOf(item.seq)] == 1 ? 15 : 50),
-                                       zIndex: 4,
+                                       zIndex: 3,
                                        height: 30,
                                        width: 30
                                    }}/>) : null}
