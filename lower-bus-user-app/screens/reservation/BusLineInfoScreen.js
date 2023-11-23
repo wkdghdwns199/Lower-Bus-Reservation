@@ -87,8 +87,8 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
                     minute=0
                     second=0
                 }
-                if (second == 0) {
-                    if (minute ==0) {
+                if (second === 0) {
+                    if (minute === 0) {
                         getBusLineStopList()
                         getBusLocation()
                     }
