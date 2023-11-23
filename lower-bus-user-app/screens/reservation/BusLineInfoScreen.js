@@ -154,8 +154,9 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
                        style={{height: '90%', width: '90%'}}/>
             </Pressable>
             <Header title={reservationBusLine.route}/>
-
             <FlatList
+                style={{height:'100%'}}
+                removeClippedSubviews={false}
                 data={busStationList}
                 keyExtractor={(item) => item.seq}
                 renderItem={({item}) => (
