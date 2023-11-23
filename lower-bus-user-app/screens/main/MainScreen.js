@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {View, Text, FlatList, StyleSheet, TextInput, Pressable, Keyboard, Platform} from 'react-native';
 import jsonData from '../../assets/busLineCode.json';
 import Header from "../../component/Header";
+import {storeData, getData} from "../../component/AsyncStorage";
 
 const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
     const [busLineData, setBusLineData] = useState([]);
@@ -9,6 +10,8 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
     const [searchBusLine, setSearchBusLine] = useState([]);
     const [searchLocation, setSearchLocation] = useState(160);
     const handleSearch = (text) => {
+
+
         setSearchText(text)
         var tempList = [];
         busLineData.map(busLine => {
@@ -20,6 +23,7 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
     }
 
     useEffect(() => {
+
         setBusLineData(jsonData)
         setSearchBusLine(jsonData)
 
