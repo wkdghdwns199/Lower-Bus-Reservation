@@ -77,11 +77,16 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
             // 현재 count 값에 1을 더한 값을 새로운 상태로 설정
             var tempList = []
             busArrivalTimeList.map(time => {
+                var minute;
+                var second;
                 if (time !== '곧 도착'){
-                    var minute = time.split('분')[0]
-                    var second = time.split('분')[1].split('초')[0]
+                    minute = time.split('분')[0]
+                    second = time.split('분')[1].split('초')[0]
                 }
-
+                else {
+                    minute=0
+                    second=0
+                }
                 if (second == 0) {
                     if (minute ==0) {
                         getBusLineStopList()
