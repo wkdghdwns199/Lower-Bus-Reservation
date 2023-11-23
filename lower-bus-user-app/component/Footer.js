@@ -8,7 +8,7 @@ const Footer = ({setCurrentScreen}) => {
         <View style={styles.footer}>
             <Pressable style={[styles.footerButton, {backgroundColor: busReservationButtonColor}]}
                        onPress={() => {
-                           setCurrentScreen('busReservation')
+                           setCurrentScreen('busReservationList')
                            setBusReservationButtonColor('white')
                            setMainButtonColor('gray')
                        }}>
@@ -24,6 +24,7 @@ const Footer = ({setCurrentScreen}) => {
                        }}>
                 <Image source={require('../assets/images/homeIcon.png')}
                        style={{height: 100, width: 100}}/>
+                <Text>홈</Text>
             </Pressable>
 
         </View>
