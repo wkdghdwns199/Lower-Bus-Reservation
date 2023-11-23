@@ -155,10 +155,9 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
             </Pressable>
             <Header title={reservationBusLine.route}/>
             <FlatList
-                style={{height:'100%'}}
-                removeClippedSubviews={false}
+                style={{flex:1}}
                 data={busStationList}
-                keyExtractor={(item) => item.seq}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                     <Pressable style={styles.itemContainer} onPress={() => {
                         findRunningBus(item.seq, item.stationNm)
