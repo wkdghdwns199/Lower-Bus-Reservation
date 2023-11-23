@@ -26,7 +26,7 @@ const App = () => {
                 <BusLineInfoScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                    setReservationBusCode={setReservationBusCode} setStartStation={setStartStation}
                                    setShowReservationModal={setShowReservationModal}/>}
-            {currentScreen === 'busLineInfo' && showReservationModal &&
+            {showReservationModal &&
                 <BusReservationScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                       reservationBusCode={reservationBusCode} startStation={startStation}
                                       setShowReservationModal={setShowReservationModal}
