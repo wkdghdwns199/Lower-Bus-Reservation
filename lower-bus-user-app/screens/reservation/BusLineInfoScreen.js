@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {View, Text, BackHandler, Pressable, FlatList, StyleSheet, Image, Alert} from "react-native";
+import {View, Text, BackHandler, Pressable, FlatList, StyleSheet, Image, Alert, ScrollView} from "react-native";
 import axios from "axios";
 import Header from "../../component/Header";
 
@@ -19,6 +19,7 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
                 + busRouteAPIKey + '&busRouteId='
                 + reservationBusLine.route_id
                 + '&resultType=json');
+            console.log(reservationBusLine.route_id)
             setBusStationList(response.data.msgBody.itemList)
         } catch (error) {
             console.log(error)
@@ -28,17 +29,18 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
     const getBusLocationList = async () => {
         try {
             const response = await axios.get(
-                'http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey='
+                'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?='
                 + busLocationAPIKey
                 + '&busRouteId='
                 + reservationBusLine.route_id
-                + '&resultType=json'
-            )
+                + '&resultType=json');
+
             if (response.data.msgBody.itemList === null) {
                 Alert.alert('운행 종료','금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
                 return []
             }
+
             setBusLocationList(response.data.msgBody.itemList)
             return response.data.msgBody.itemList;
         } catch (error) {
@@ -127,43 +129,45 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
     }, []);
 
     const findRunningBus = (reserveLoc, stationNm) => {
-        console.log(busLocationList)
-        while(--reserveLoc){
-            if (busLocationList.includes(reserveLoc.toString())){
+        console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
+
+        while(--reserveLoc) {
+            if (busLocationList.includes(reserveLoc.toString())) {
                 console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
                 setStartStation(stationNm)
                 setReservationBusCode(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
                 setShowReservationModal(true);
-                return ;
+                return;
             }
         }
 
+
         Alert.alert('예약 불가', '정류장에 도착 예정인 버스가 없습니다.');
         console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
-        // setStartStation(stationNm)
-        // setReservationBusCode('서울75사2644')
-        // setShowReservationModal(true);
 
     }
+
+    const list = ["1","2","3","4","5","6","7"]
     return (
         <View style={styles.container}>
+
             <Pressable style={styles.backButton} onPress={() => {
                 setCurrentScreen('main')
             }}>
-                <Image source={require('../../assets/images/backButtonIcon.png')}
+                <Image source={require('../../images/backButtonIcon.png')}
                        style={{height: '90%', width: '90%'}}/>
             </Pressable>
             <Header title={reservationBusLine.route}/>
+            <View style={styles.busLineList}>
             <FlatList
-                style={{flex:1}}
                 data={busStationList}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => (
+                renderItem={({item}) => { return (
                     <Pressable style={styles.itemContainer} onPress={() => {
                         findRunningBus(item.seq, item.stationNm)
                     }}>
                         {busLocationList.includes(item.seq) ? (
-                            <Image source={require('../../assets/images/busIcon.png')}
+                            <Image source={require('../../images/busIcon.png')}
                                    style={{
                                        backgroundColor: 'white',
                                        position: 'absolute',
@@ -173,10 +177,10 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
                                        width: 30
                                    }}/>) : null}
 
-                        <Image source={require('../../assets/images/busStationIcon.png')}
+                        <Image source={require('../../images/busStationIcon.png')}
                                style={{height: 15, width: 15}}/>
                         {busStationList.length != item.seq ? (
-                            <Image source={require('../../assets/images/busLine.png')}
+                            <Image source={require('../../images/busLine.png')}
                                    style={{
                                        position: 'absolute',
                                        top: 25,
@@ -198,8 +202,18 @@ const BusLineInfoScreen = ({setCurrentScreen, reservationBusLine, setReservation
                             }}>{busArrivalTimeList[busLocationList.indexOf((item.seq - 1).toString())]}</Text>) : null}
 
                     </Pressable>
-                )}
+                )}}
+
             />
+            </View>
+
+                {/*})}*/}
+                {/*<Text>{process.env.EXPO_PUBLIC_BUS_ROUTE_API_KEY}</Text>*/}
+                {/*<Text>{process.env.EXPO_PUBLIC_BUS_LOCATION_API_KEY}</Text>*/}
+                {/*<ScrollView>*/}
+                {/*    {busStationList.map(busStation => (<Text>{busStation.stationNm}</Text>))}*/}
+                {/*</ScrollView>*/}
+
         </View>
     )
 
@@ -213,6 +227,11 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 16,
     },
+    busLineList: {
+        height: '80%',
+        width: '100%',
+        zIndex:2,
+    },
     backButton: {
         position: 'absolute',
         height: 50,
@@ -220,7 +239,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         bottom: 30,
         right: 70,
-        zIndex: 1,
+        zIndex: 3,
         borderRadius: 50,
         borderWidth: 1,
         justifyContent: 'center',
