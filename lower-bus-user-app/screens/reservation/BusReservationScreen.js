@@ -13,7 +13,7 @@ const BusReservationScreen = ({
                                   startStation,
                                   setShowReservationModal,
                                   setReservationUUID,
-                                    busLineCompany
+                                  busLineCompany
                               }) => {
 
     const [toggleCheckBox, setToggleCheckBox] = useState(true)

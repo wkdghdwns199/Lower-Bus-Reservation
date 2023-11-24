@@ -50,7 +50,7 @@ const ComfirmCancelModal = ({setToggleConfirmCancel, reservationUUID, setReserva
                     deleteReservation()
                     setToggleConfirmCancel(false)
                     setReservationUUID('')
-                    setCurrentScreen('main')
+                    setCurrentScreen('busLineInfo')
                 }}><Text style={{fontSize:20,}}>네</Text></Pressable>
             </View>
 
