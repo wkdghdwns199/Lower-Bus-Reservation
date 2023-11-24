@@ -1,9 +1,10 @@
-import {BackHandler, Text, View, StyleSheet, Pressable} from "react-native";
+import {BackHandler, Text, View, StyleSheet, Pressable, TouchableOpacity, Linking} from "react-native";
 import {useEffect, useState} from "react";
 import CheckBox from 'expo-checkbox'
 import {supabase} from "../../component/Supabase";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import ConfirmDepartureModal from "../../component/ConfirmDepartureModal";
 
 const BusReservationScreen = ({
                                   setCurrentScreen,
@@ -11,12 +12,14 @@ const BusReservationScreen = ({
                                   reservationBusLine,
                                   startStation,
                                   setShowReservationModal,
-                                  setReservationUUID
+                                  setReservationUUID,
+                                    busLineCompany
                               }) => {
 
     const [toggleCheckBox, setToggleCheckBox] = useState(true)
 
     useEffect(() => {
+        console.log(busLineCompany)
         const backAction = () => {
             setShowReservationModal(false)
             return true;
@@ -33,6 +36,7 @@ const BusReservationScreen = ({
     }, []);
 
     const reservationDataInsert = async (uuid) => {
+        console.log(toggleCheckBox)
         await supabase
             .from('bus_reservation')
             .insert([
@@ -40,16 +44,19 @@ const BusReservationScreen = ({
                     reservation_bus_code : reservationBusCode,
                     reservation_bus_line : reservationBusLine.route,
                     reservation_starting_point : startStation,
-                    lift_using_status : true,
+                    lift_using_status : toggleCheckBox,
                     bus_reservation_uuid : uuid,
                 }
             ])
         return uuid
     }
 
-
+    const handlePhonePress = () => {
+        Linking.openURL('tel:'+ busLineCompany.split("  ")[1])
+    }
     return (
         <View style={styles.container}>
+
             <View style={{
                 position: 'absolute',
                 top: 20,
@@ -73,9 +80,23 @@ const BusReservationScreen = ({
                         console.log(toggleCheckBox)
                     }}
                 />
-                    <Text style={{marginLeft : 10,}}>리프트 작동 여부</Text>
+                    <Text style={{marginLeft : 10, marginBottom:10,}}>리프트 작동 여부</Text>
                 </View>
 
+
+
+
+
+            </View>
+
+            <View style={{
+                position: 'absolute',
+                bottom:80,
+                left:10,
+            }}>
+                <TouchableOpacity onPress={handlePhonePress}>
+                    <Text style={{fontSize: 13,}}>{busLineCompany.split("  ")[1]} 전화 예약</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={{position: 'absolute', bottom: 0, height:70, width: '100%', flexDirection: 'row'}}>
@@ -102,6 +123,7 @@ const BusReservationScreen = ({
                     setShowReservationModal(false)
                     setCurrentScreen('busLDeparture')} }><Text style={{fontSize:20,}}>네</Text></Pressable>
             </View>
+
 
         </View>
     )

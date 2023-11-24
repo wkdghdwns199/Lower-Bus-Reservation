@@ -34,7 +34,7 @@ const Footer = ({setCurrentScreen}) => {
 const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
-        height: 150,
+        height: 200,
         width: '100%',
         position: 'absolute',
         bottom: 0,

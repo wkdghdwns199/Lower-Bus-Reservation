@@ -2,13 +2,13 @@ import {useState, useEffect} from 'react';
 import {View, Text, FlatList, StyleSheet, TextInput, Pressable, Keyboard, Platform} from 'react-native';
 import jsonData from '../../assets/busLineCode.json';
 import Header from "../../component/Header";
-import {storeData, getData} from "../../component/AsyncStorage";
+import {storeData, getData} from "../../component/asyncStorage";
 
 const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
     const [busLineData, setBusLineData] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchBusLine, setSearchBusLine] = useState([]);
-    const [searchLocation, setSearchLocation] = useState(160);
+    const [searchLocation, setSearchLocation] = useState(220);
     const handleSearch = (text) => {
 
 
@@ -30,7 +30,7 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             (event) => {
-                Platform.OS === 'ios' ? setSearchLocation(300) : setSearchLocation(160);
+                Platform.OS === 'ios' ? setSearchLocation(300) : setSearchLocation(220);
             },
         );
 
