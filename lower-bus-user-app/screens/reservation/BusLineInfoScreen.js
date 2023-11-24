@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {View, Text, BackHandler, Pressable, FlatList, StyleSheet, Image, Alert, ScrollView} from "react-native";
-import axios from "axios";
 import Header from "../../component/Header";
-import Config from "react-native-config";
 
 const BusLineInfoScreen = ({
                                setCurrentScreen,
@@ -19,7 +17,7 @@ const BusLineInfoScreen = ({
 
 
     useEffect(() => {
-
+        // console.log(busStationList)
         const backAction = () => {
             setCurrentScreen('main');
             return true;

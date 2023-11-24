@@ -4,7 +4,7 @@ import jsonData from '../../assets/busLineCode.json';
 import Header from "../../component/Header";
 import {storeData, getData} from "../../component/asyncStorage";
 
-const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
+const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setIntoScreen}) => {
     const [busLineData, setBusLineData] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchBusLine, setSearchBusLine] = useState([]);
@@ -55,8 +55,8 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine}) => {
                     keyExtractor={(item) => item.route_id.toString()}
                     renderItem={({item}) => (
                         <Pressable style={styles.itemContainer} onPress={() => {
+                            intoScreen ? setIntoScreen(false) : setIntoScreen(true)
                             setReservationBusLine(item)
-                            setCurrentScreen('busLineInfo')
                         }}>
                             <Text style={styles.item}>{item.route}</Text>
                         </Pressable>

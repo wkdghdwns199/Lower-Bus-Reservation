@@ -8,8 +8,8 @@ import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
-import {getData, storeData} from "./component/asyncStorage";
 import axios from "axios";
+import LoadingModal from "./component/LoadingModal";
 
 const App = () => {
     const [currentScreen, setCurrentScreen] = useState('main');
@@ -27,6 +27,9 @@ const App = () => {
     const [busArrivalTimeList, setBusArrivalTimeList] = useState([]);
     const [busCodeList, setBusCodeList] = useState([]);
 
+    const [sw, setSw] = useState(false);
+    const [intoScreen, setIntoScreen] = useState(false);
+    const [showLoadingModal, setShowLoadingModal] = useState(false);
 
     const busRouteAPIKey = process.env.EXPO_PUBLIC_BUS_ROUTE_API_KEY;
     const busLocationAPIKey = process.env.EXPO_PUBLIC_BUS_LOCATION_API_KEY;
@@ -73,6 +76,7 @@ const App = () => {
             return [];
         }
     }
+
     const getBusLocation = async () => {
         getBusLocationList()
             .then(res => {
@@ -154,15 +158,17 @@ const App = () => {
 
     useEffect(() => {
 
+
         const fetchData = async () => {
+            setShowLoadingModal(true);
             try{
-                await getBusLineStopList()
+                getBusLineStopList()
                     .then(res => {
                         // console.log(res)
                         setBusStationList(res)
 
                     });
-                await getBusLocation();
+                getBusLocation();
 
                 getBusLineCompany()
                     .then(res => setBusLineCompany(res))
@@ -176,15 +182,26 @@ const App = () => {
         }
 
         fetchData()
+            .then(() => {
+                 sw ? (
+                         setShowLoadingModal(false),
+                        console.log(reservationBusLine),
+                        setCurrentScreen('busLineInfo')
+                    ):
+                    (
+                        setShowLoadingModal(false),
+                        console.log('reset'),
+                        setSw(true),
+                        setCurrentScreen('main'))
+            })
 
-    }, [reservationBusLine]);
+    }, [intoScreen]);
 
 
     return (
-
         <View style={styles.container}>
             {currentScreen === 'main' &&
-                <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}/>}
+                <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine} intoScreen={intoScreen} setIntoScreen={setIntoScreen}/>}
             {currentScreen === 'busReservationList' && <BusReservationListScreen/>}
             {(currentScreen === 'main' || currentScreen === 'busReservationList') &&
                 <Footer setCurrentScreen={setCurrentScreen}/>}
@@ -204,6 +221,10 @@ const App = () => {
                 <BusDepartureScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                     reservationBusCode={reservationBusCode}
                                     setReservationUUID={setReservationUUID} reservationUUID={reservationUUID}/>}
+
+            {showLoadingModal &&
+                <LoadingModal />}
+
         </View>
     );
 };
