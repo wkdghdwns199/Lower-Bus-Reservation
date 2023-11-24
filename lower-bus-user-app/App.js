@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {StyleSheet, View, Text} from "react-native";
 import Footer from "./component/Footer";
@@ -8,6 +8,8 @@ import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
+import {getData, storeData} from "./component/asyncStorage";
+
 const App = () => {
     const [currentScreen, setCurrentScreen] = useState('main');
     const [reservationBusLine, setReservationBusLine] = useState('');
@@ -15,6 +17,9 @@ const App = () => {
     const [startStation, setStartStation] = useState('');
     const [showReservationModal, setShowReservationModal] = useState(false);
     const [reservationUUID, setReservationUUID] = useState('');
+    const [busLineCompany , setBusLineCompany] = useState('')
+
+
     return (
         <View style={styles.container}>
             {currentScreen === 'main' &&
@@ -25,12 +30,12 @@ const App = () => {
             {currentScreen === 'busLineInfo' &&
                 <BusLineInfoScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                    setReservationBusCode={setReservationBusCode} setStartStation={setStartStation}
-                                   setShowReservationModal={setShowReservationModal}/>}
+                                   setShowReservationModal={setShowReservationModal} setBusLineCompany={setBusLineCompany}/>}
             {showReservationModal &&
                 <BusReservationScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                       reservationBusCode={reservationBusCode} startStation={startStation}
                                       setShowReservationModal={setShowReservationModal}
-                                      setReservationUUID={setReservationUUID}/>}
+                                      setReservationUUID={setReservationUUID} busLineCompany={busLineCompany}/>}
 
             {currentScreen === 'busLDeparture' &&
                 <BusDepartureScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
