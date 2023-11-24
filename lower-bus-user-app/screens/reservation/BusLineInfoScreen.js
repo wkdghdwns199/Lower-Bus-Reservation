@@ -74,8 +74,8 @@ const BusLineInfoScreen = ({
             <Header title={reservationBusLine.route}/>
 
             <ScrollView style={styles.busLineList}>
-                {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
-                {/*<Text>{busLocationAPIKey}</Text>*/}
+                <Text>{JSON.stringify(busStationList)}</Text>
+                {/*<Text>{busLocationAPIKey}</Text>*/}s
                 {/*<Text>{busRouteAPIKey}</Text>*/}
                 {
                     busStationList.map(item => (
