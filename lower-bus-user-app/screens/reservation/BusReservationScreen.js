@@ -19,7 +19,7 @@ const BusReservationScreen = ({
     const [toggleCheckBox, setToggleCheckBox] = useState(true)
 
     useEffect(() => {
-        console.log(busLineCompany)
+        //console.log(busLineCompany)
         const backAction = () => {
             setShowReservationModal(false)
             return true;
@@ -36,7 +36,7 @@ const BusReservationScreen = ({
     }, []);
 
     const reservationDataInsert = async (uuid) => {
-        console.log(toggleCheckBox)
+        //console.log(toggleCheckBox)
         await supabase
             .from('bus_reservation')
             .insert([
@@ -77,7 +77,7 @@ const BusReservationScreen = ({
                     value={toggleCheckBox}
                     onValueChange={(newValue) => {
                         setToggleCheckBox(newValue)
-                        console.log(toggleCheckBox)
+                       // console.log(toggleCheckBox)
                     }}
                 />
                     <Text style={{marginLeft : 10, marginBottom:10,}}>리프트 작동 여부</Text>

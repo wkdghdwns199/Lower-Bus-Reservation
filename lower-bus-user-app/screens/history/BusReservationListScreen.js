@@ -22,7 +22,7 @@ const BusReservationListScreen = () => {
                 tempList.push(data[0])
             } catch (error) {
                 tempList.push([])
-                console.log(error)
+                //console.log(error)
             }
             // console.log(tempList)
         }

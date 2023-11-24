@@ -5,7 +5,7 @@ import {getData, storeData} from "./asyncStorage";
 
 const ComfirmCancelModal = ({setToggleConfirmCancel, reservationUUID, setReservationUUID, setCurrentScreen}) => {
     const deleteReservation = async () => {
-        console.log(reservationUUID)
+        //console.log(reservationUUID)
         await supabase
             .from('bus_reservation')
             .delete()

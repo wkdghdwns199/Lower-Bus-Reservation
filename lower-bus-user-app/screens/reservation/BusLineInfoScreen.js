@@ -74,8 +74,8 @@ const BusLineInfoScreen = ({
             <Header title={reservationBusLine.route}/>
 
             <ScrollView style={styles.busLineList}>
-                <Text>{JSON.stringify(busStationList)}</Text>
-                {/*<Text>{busLocationAPIKey}</Text>*/}s
+                {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
+                {/*<Text>{busLocationAPIKey}</Text>*/}
                 {/*<Text>{busRouteAPIKey}</Text>*/}
                 {
                     busStationList.map(item => (
@@ -142,7 +142,7 @@ const styles= StyleSheet.create({
         padding: 16,
     },
     busLineList: {
-        height: '80%',
+        flex:1,
         width: '100%',
     },
     backButton: {

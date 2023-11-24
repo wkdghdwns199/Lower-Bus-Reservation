@@ -50,7 +50,7 @@ const App = () => {
             // setBusStationList(response.data.msgBody.itemList)
             return response.data.msgBody.itemList
         } catch (error) {
-            console.log('!' + error)
+            //console.log('!' + error)
             return [];
         }
     }
@@ -72,7 +72,7 @@ const App = () => {
             setBusLocationList(response.data.msgBody.itemList)
             return response.data.msgBody.itemList;
         } catch (error) {
-            console.log('!!' + error)
+            //console.log('!!' + error)
             return [];
         }
     }
@@ -114,13 +114,13 @@ const App = () => {
                 + '&resultType=json');
 
             if (response.data.msgBody.itemList === null) {
-                console.log("운수회사 가져오기 실패")
+                //console.log("운수회사 가져오기 실패")
                 setBusLocationList('')
             }
-            console.log(response.data.msgBody.itemList[0].corpNm)
+            //console.log(response.data.msgBody.itemList[0].corpNm)
             return response.data.msgBody.itemList[0].corpNm
         } catch (error) {
-            console.log('!!!' + error)
+            //console.log('!!!' + error)
             return ''
         }
     }
@@ -162,18 +162,18 @@ const App = () => {
         const fetchData = async () => {
             setShowLoadingModal(true);
             try{
-                getBusLineStopList()
+                await getBusLineStopList()
                     .then(res => {
                         // console.log(res)
                         setBusStationList(res)
 
                     });
-                getBusLocation();
+                await getBusLocation();
 
-                getBusLineCompany()
+                await getBusLineCompany()
                     .then(res => setBusLineCompany(res))
 
-                console.log('DATA SET COMPLETE')
+                //console.log('DATA SET COMPLETE')
                 return true;
             }
             catch(error){
@@ -185,12 +185,12 @@ const App = () => {
             .then(() => {
                  sw ? (
                          setShowLoadingModal(false),
-                        console.log(reservationBusLine),
+                        //console.log(reservationBusLine),
                         setCurrentScreen('busLineInfo')
                     ):
                     (
                         setShowLoadingModal(false),
-                        console.log('reset'),
+                        //console.log('reset'),
                         setSw(true),
                         setCurrentScreen('main'))
             })
