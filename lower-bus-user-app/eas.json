@@ -16,7 +16,8 @@
         "EXPO_PUBLIC_BUS_LOCATION_API_KEY" : "1SFO0X6QswV8GtusD6ByZlTaiYocBE0nVmhbmoNTb3mUPc%2FUEDJtNbgO6pexMnb8Y%2BuGwXcfUjw9ZJYMPUl2RQ%3D%3D"
 
       }
-    }
+    },
+    "production": {}
   },
   "submit": {
     "production": {}

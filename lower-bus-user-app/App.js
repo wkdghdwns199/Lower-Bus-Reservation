@@ -21,7 +21,7 @@ const App = () => {
     const [busLineCompany, setBusLineCompany] = useState('')
 
 
-    const [busStationList, setBusStationList] = useState([])
+    const [busStationList, setBusStationList] = useState([1,2,3])
     const [busLocationList, setBusLocationList] = useState([])
     const [busStopStatusList, setBusStopStatusList] = useState([])
     const [busArrivalTimeList, setBusArrivalTimeList] = useState([]);
@@ -157,8 +157,6 @@ const App = () => {
     }, [busArrivalTimeList])
 
     useEffect(() => {
-
-
         const fetchData = async () => {
             setShowLoadingModal(true);
             try {
@@ -180,28 +178,31 @@ const App = () => {
             }
         }
 
-        fetchData()
-            .then(() => {
+         fetchData()
+            .then(async () => {
                 sw ? (
-                        setShowLoadingModal(false),
+                        await setShowLoadingModal(false),
                             //console.log(reservationBusLine),
-                            setCurrentScreen('busLineInfo')
+                            setTimeout(() => {
+                                setCurrentScreen('busLineInfo')
+                            }, 3000)
                     ) :
                     (
-                        setShowLoadingModal(false),
+                        await setShowLoadingModal(false),
                             //console.log('reset'),
-                            setSw(true),
-                            setCurrentScreen('main'))
+                        await setSw(true),
+                        await setCurrentScreen('main'))
             })
 
     }, [intoScreen]);
+
 
 
     return (
         <View style={styles.container}>
             {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
-                            intoScreen={intoScreen} setIntoScreen={setIntoScreen}/>}
+                            intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
             {currentScreen === 'busReservationList' && <BusReservationListScreen/>}
             {(currentScreen === 'main' || currentScreen === 'busReservationList') &&
                 <Footer setCurrentScreen={setCurrentScreen}/>}

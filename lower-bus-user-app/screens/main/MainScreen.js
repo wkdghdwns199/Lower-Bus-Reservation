@@ -4,7 +4,7 @@ import jsonData from '../../assets/busLineCode.json';
 import Header from "../../component/Header";
 import {storeData, getData} from "../../component/asyncStorage";
 
-const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setIntoScreen}) => {
+const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setIntoScreen, busStationList}) => {
     const [busLineData, setBusLineData] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchBusLine, setSearchBusLine] = useState([]);
@@ -37,7 +37,7 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setInt
         const keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
             () => {
-                setSearchLocation(160);
+                setSearchLocation(220);
             },
         );
         return () => {
@@ -48,7 +48,7 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setInt
     }, []);
     return (
         <View style={styles.container}>
-            <Text>{intoScreen}</Text>
+            <Text>{JSON.stringify(busStationList)}</Text>
             <View style={styles.busLineList}>
                 <Header title={"버스 노선 "}/>
                 <FlatList

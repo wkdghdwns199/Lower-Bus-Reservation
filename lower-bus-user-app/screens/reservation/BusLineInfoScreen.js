@@ -151,7 +151,7 @@ const styles= StyleSheet.create({
         padding: 16,
     },
     busLineList: {
-        flex:1,
+        height:'80%',
         width: '100%',
     },
     backButton: {
