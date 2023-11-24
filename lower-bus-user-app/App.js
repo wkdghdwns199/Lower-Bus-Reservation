@@ -18,7 +18,7 @@ const App = () => {
     const [startStation, setStartStation] = useState('');
     const [showReservationModal, setShowReservationModal] = useState(false);
     const [reservationUUID, setReservationUUID] = useState('');
-    const [busLineCompany , setBusLineCompany] = useState('')
+    const [busLineCompany, setBusLineCompany] = useState('')
 
 
     const [busStationList, setBusStationList] = useState([])
@@ -43,7 +43,7 @@ const App = () => {
                 + '&resultType=json');
 
             // console.log(response.data.msgBody.itemList)
-            if (response.data.msgBody.itemList === null){
+            if (response.data.msgBody.itemList === null) {
                 return [];
             }
 
@@ -161,7 +161,7 @@ const App = () => {
 
         const fetchData = async () => {
             setShowLoadingModal(true);
-            try{
+            try {
                 await getBusLineStopList()
                     .then(res => {
                         // console.log(res)
@@ -175,24 +175,23 @@ const App = () => {
 
                 //console.log('DATA SET COMPLETE')
                 return true;
-            }
-            catch(error){
+            } catch (error) {
                 return false;
             }
         }
 
         fetchData()
             .then(() => {
-                 sw ? (
-                         setShowLoadingModal(false),
-                        //console.log(reservationBusLine),
-                        setCurrentScreen('busLineInfo')
-                    ):
+                sw ? (
+                        setShowLoadingModal(false),
+                            //console.log(reservationBusLine),
+                            setCurrentScreen('busLineInfo')
+                    ) :
                     (
                         setShowLoadingModal(false),
-                        //console.log('reset'),
-                        setSw(true),
-                        setCurrentScreen('main'))
+                            //console.log('reset'),
+                            setSw(true),
+                            setCurrentScreen('main'))
             })
 
     }, [intoScreen]);
@@ -201,7 +200,8 @@ const App = () => {
     return (
         <View style={styles.container}>
             {currentScreen === 'main' &&
-                <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine} intoScreen={intoScreen} setIntoScreen={setIntoScreen}/>}
+                <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
+                            intoScreen={intoScreen} setIntoScreen={setIntoScreen}/>}
             {currentScreen === 'busReservationList' && <BusReservationListScreen/>}
             {(currentScreen === 'main' || currentScreen === 'busReservationList') &&
                 <Footer setCurrentScreen={setCurrentScreen}/>}
@@ -209,13 +209,16 @@ const App = () => {
                 <BusLineInfoScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                    setReservationBusCode={setReservationBusCode} setStartStation={setStartStation}
                                    setShowReservationModal={setShowReservationModal} busLineCompany={busLineCompany}
-                                   busStationList = {busStationList} busStopStatusList = {busStopStatusList} busLocationList = {busLocationList}
-                                   busArrivalTimeList={busArrivalTimeList} busCodeList = {busCodeList} setBusCodeList = {setBusCodeList} />}
+                                   busStationList={busStationList} busStopStatusList={busStopStatusList}
+                                   busLocationList={busLocationList}
+                                   busArrivalTimeList={busArrivalTimeList} busCodeList={busCodeList}
+                                   setBusCodeList={setBusCodeList} intoScreen={intoScreen}
+                                   setIntoScreen={setIntoScreen}/>}
             {showReservationModal &&
                 <BusReservationScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                       reservationBusCode={reservationBusCode} startStation={startStation}
                                       setShowReservationModal={setShowReservationModal}
-                                      setReservationUUID={setReservationUUID} busLineCompany={busLineCompany} />}
+                                      setReservationUUID={setReservationUUID} busLineCompany={busLineCompany}/>}
 
             {currentScreen === 'busLDeparture' &&
                 <BusDepartureScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
@@ -223,7 +226,7 @@ const App = () => {
                                     setReservationUUID={setReservationUUID} reservationUUID={reservationUUID}/>}
 
             {showLoadingModal &&
-                <LoadingModal />}
+                <LoadingModal/>}
 
         </View>
     );

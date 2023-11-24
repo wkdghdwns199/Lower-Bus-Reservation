@@ -13,6 +13,8 @@ const BusLineInfoScreen = ({
                                busLocationList,
                                busArrivalTimeList,
                                busCodeList,
+                                intoScreen,
+                                setIntoScreen
                            }) => {
 
 
@@ -68,15 +70,22 @@ const BusLineInfoScreen = ({
             <Pressable style={styles.backButton} onPress={() => {
                 setCurrentScreen('main')
             }}>
+
                 <Image source={require('../../images/backButtonIcon.png')}
+                       style={{height: '90%', width: '90%'}}/>
+            </Pressable>
+
+            <Pressable style={styles.refreshButton} onPress={() => {
+                intoScreen ? setIntoScreen(false) : setIntoScreen(true)
+            }}>
+
+                <Image source={require('../../images/refreshIcon.png')}
                        style={{height: '90%', width: '90%'}}/>
             </Pressable>
             <Header title={reservationBusLine.route}/>
 
             <ScrollView style={styles.busLineList}>
-                {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
-                {/*<Text>{busLocationAPIKey}</Text>*/}
-                {/*<Text>{busRouteAPIKey}</Text>*/}
+                <Text>{JSON.stringify(busStationList)}</Text>
                 {
                     busStationList.map(item => (
                         <Pressable style={styles.itemContainer} onPress={() => {
@@ -155,6 +164,19 @@ const styles= StyleSheet.create({
         zIndex: 3,
         borderRadius: 50,
         borderWidth: 1,
+        justifyContent: 'center',
+    },
+    refreshButton: {
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        backgroundColor: 'white',
+        bottom: 30,
+        right: 10,
+        zIndex: 3,
+        borderRadius: 50,
+        borderWidth: 1,
+        alignItems:'center',
         justifyContent: 'center',
     },
     itemContainer: {
