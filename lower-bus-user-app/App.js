@@ -8,7 +8,7 @@ import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
-import axios from "axios";
+import axios from "./component/axiosConfig";
 import LoadingModal from "./component/LoadingModal";
 
 const App = () => {
@@ -44,14 +44,14 @@ const App = () => {
 
             // console.log(response.data.msgBody.itemList)
             if (response.data.msgBody.itemList === null) {
-                return [];
+                return ['null'];
             }
 
             setBusStationList(response.data.msgBody.itemList)
             return response.data.msgBody.itemList
         } catch (error) {
-            //console.log('!' + error)
-            return [];
+            // console.log('!' + error)
+            return error
         }
     }
 
@@ -66,14 +66,14 @@ const App = () => {
             if (response.data.msgBody.itemList === null) {
                 Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
-                return []
+                return ['null']
             }
 
             setBusLocationList(response.data.msgBody.itemList)
             return response.data.msgBody.itemList;
         } catch (error) {
             //console.log('!!' + error)
-            return [];
+            return error
         }
     }
 
@@ -107,7 +107,7 @@ const App = () => {
 
     const getBusLineCompany = async () => {
         try {
-            const response = await axios.get(
+            const response = axios.get(
                 'http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey='
                 + busLocationAPIKey + '&strSrch='
                 + reservationBusLine.route
@@ -115,7 +115,8 @@ const App = () => {
 
             if (response.data.msgBody.itemList === null) {
                 //console.log("운수회사 가져오기 실패")
-                setBusLocationList('')
+                setBusLineCompany('')
+                return 'null'
             }
             //console.log(response.data.msgBody.itemList[0].corpNm)
             setBusLineCompany(response.data.msgBody.itemList[0].corpNm)
@@ -123,6 +124,7 @@ const App = () => {
         } catch (error) {
             //console.log('!!!' + error)
             return ''
+            return 'error'
         }
     }
 
@@ -159,18 +161,22 @@ const App = () => {
 
 
     useEffect(() => {
-        setShowLoadingModal(true);
+        // setShowLoadingModal(true);
         getBusLineStopList()
-            .then(() => {
+            .then(res => {
                 // console.log(res)
                 // setBusStationList(res)
                 getBusLocation();
                 getBusLineCompany()
                     .then(res2 => {
-                        sw ?  setCurrentScreen('busLineInfo') : (setCurrentScreen('main'), setSw(true))
-                        setShowLoadingModal(false)
-                            //console.log(reservationBusLine),
-
+                        if (res[0] === 'null') setCurrentScreen('main')
+                        else {
+                            console.log('LoadingData...')
+                            setBusStationList(res)
+                            setBusLineCompany(res2)
+                            setCurrentScreen('busLineInfo')
+                        }
+                        // setShowLoadingModal(false)
                     })
             });
 
@@ -179,6 +185,8 @@ const App = () => {
 
     return (
         <View style={styles.container}>
+            <Text>{busRouteAPIKey}</Text>
+            <Text>{busLocationAPIKey}</Text>
             {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
                             intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
@@ -205,8 +213,7 @@ const App = () => {
                                     reservationBusCode={reservationBusCode}
                                     setReservationUUID={setReservationUUID} reservationUUID={reservationUUID}/>}
 
-            {showLoadingModal &&
-                <LoadingModal/>}
+            {/*{showLoadingModal && <LoadingModal/>}*/}
 
         </View>
     );

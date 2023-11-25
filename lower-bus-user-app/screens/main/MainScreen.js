@@ -48,16 +48,16 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setInt
     }, []);
     return (
         <View style={styles.container}>
-            {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
+            <Text>{JSON.stringify(busStationList)}</Text>
             <View style={styles.busLineList}>
                 <Header title={"버스 노선 "}/>
                 <FlatList
                     data={searchBusLine}
                     keyExtractor={(item) => item.route_id.toString()}
                     renderItem={({item}) => (
-                        <Pressable style={styles.itemContainer} onPress={() => {
+                        <Pressable style={styles.itemContainer} onPress={async () => {
+                            await setReservationBusLine(item)
                             intoScreen ? setIntoScreen(false) : setIntoScreen(true)
-                            setReservationBusLine(item)
                         }}>
                             <Text style={styles.item}>{item.route}</Text>
                         </Pressable>

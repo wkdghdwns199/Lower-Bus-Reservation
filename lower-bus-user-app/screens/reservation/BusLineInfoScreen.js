@@ -19,6 +19,7 @@ const BusLineInfoScreen = ({
 
 
     useEffect(() => {
+
         // console.log(busStationList)
         const backAction = () => {
             setCurrentScreen('main');
@@ -85,56 +86,57 @@ const BusLineInfoScreen = ({
             <Header title={reservationBusLine.route}/>
 
             <ScrollView style={styles.busLineList}>
-                {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
-                {
-                    busStationList.map(item => (
-                        <Pressable style={styles.itemContainer} onPress={() => {
-                            findRunningBus(item.seq, item.stationNm)
-                            // setStartStation(item.stationNm)
-                            // setReservationBusCode('서울42사2034')
-                            // setShowReservationModal(true)
-                        }} key={item.seq}>
+                <Text>{JSON.stringify(busStationList)}</Text>
+                <Text>{JSON.stringify(busLocationList)}</Text>
+                {/*{*/}
+                {/*    busStationList.map(item => (*/}
+                {/*        <Pressable style={styles.itemContainer} onPress={() => {*/}
+                {/*            findRunningBus(item.seq, item.stationNm)*/}
+                {/*            // setStartStation(item.stationNm)*/}
+                {/*            // setReservationBusCode('서울42사2034')*/}
+                {/*            // setShowReservationModal(true)*/}
+                {/*        }} key={item.seq}>*/}
 
-                            {busLocationList.includes(item.seq) ? (
-                                <Image source={require('../../images/busIcon.png')}
-                                       style={{
-                                           backgroundColor: 'white',
-                                           position: 'absolute',
-                                           top: (busStopStatusList[busLocationList.indexOf(item.seq)] == 1 ? 15 : 50),
-                                           zIndex: 3,
-                                           height: 30,
-                                           width: 30
-                                       }}/>) : null}
+                {/*            {busLocationList.includes(item.seq) ? (*/}
+                {/*                <Image source={require('../../images/busIcon.png')}*/}
+                {/*                       style={{*/}
+                {/*                           backgroundColor: 'white',*/}
+                {/*                           position: 'absolute',*/}
+                {/*                           top: (busStopStatusList[busLocationList.indexOf(item.seq)] == 1 ? 15 : 50),*/}
+                {/*                           zIndex: 3,*/}
+                {/*                           height: 30,*/}
+                {/*                           width: 30*/}
+                {/*                       }}/>) : null}*/}
 
-                            <Image source={require('../../images/busStationIcon.png')}
-                                   style={{height: 15, width: 15}}/>
-                            {busStationList.length != item.seq ? (
-                                <Image source={require('../../images/busLine.png')}
-                                       style={{
-                                           position: 'absolute',
-                                           top: 25,
-                                           left: 12.5,
-                                           zIndex: -1,
-                                           height: 95,
-                                           width: 6
-                                       }}/>) : null}
+                {/*            <Image source={require('../../images/busStationIcon.png')}*/}
+                {/*                   style={{height: 15, width: 15}}/>*/}
+                {/*            {busStationList.length != item.seq ? (*/}
+                {/*                <Image source={require('../../images/busLine.png')}*/}
+                {/*                       style={{*/}
+                {/*                           position: 'absolute',*/}
+                {/*                           top: 25,*/}
+                {/*                           left: 12.5,*/}
+                {/*                           zIndex: -1,*/}
+                {/*                           height: 95,*/}
+                {/*                           width: 6*/}
+                {/*                       }}/>) : null}*/}
 
-                            <Text style={styles.item}>
-                                {item.stationNm.length >= 16 ? item.stationNm.substring(0, 15) + '...' : item.stationNm}
-                            </Text>
-                            {busLocationList.includes((item.seq - 1).toString()) &&
-                                busStopStatusList[busLocationList.indexOf((item.seq - 1).toString())] !== 1 ? (
-                                <Text style={{
-                                    fontSize: 12,
-                                    color: 'red',
-                                    position: 'absolute',
-                                    right: 30,
-                                    top: 50,
-                                }}>{busArrivalTimeList[busLocationList.indexOf((item.seq - 1).toString())]}</Text>) : null}
+                {/*            <Text style={styles.item}>*/}
+                {/*                {item.stationNm.length >= 16 ? item.stationNm.substring(0, 15) + '...' : item.stationNm}*/}
+                {/*            </Text>*/}
+                {/*            {busLocationList.includes((item.seq - 1).toString()) &&*/}
+                {/*                busStopStatusList[busLocationList.indexOf((item.seq - 1).toString())] !== 1 ? (*/}
+                {/*                <Text style={{*/}
+                {/*                    fontSize: 12,*/}
+                {/*                    color: 'red',*/}
+                {/*                    position: 'absolute',*/}
+                {/*                    right: 30,*/}
+                {/*                    top: 50,*/}
+                {/*                }}>{busArrivalTimeList[busLocationList.indexOf((item.seq - 1).toString())]}</Text>) : null}*/}
 
-                        </Pressable>
-                    ))
-                }
+                {/*        </Pressable>*/}
+                {/*    ))*/}
+                {/*}*/}
             </ScrollView>
 
         </View>
