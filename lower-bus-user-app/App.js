@@ -8,8 +8,8 @@ import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
-import instance from "./component/axiosConfig";
 import LoadingModal from "./component/LoadingModal";
+import axios from "axios";
 
 const App = () => {
     const [currentScreen, setCurrentScreen] = useState('main');
@@ -36,18 +36,14 @@ const App = () => {
 
     const getBusLineStopList = async () => {
         try {
-            const response = await instance.get(
-                'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey='
-                + busRouteAPIKey + '&busRouteId='
-                + reservationBusLine.route_id
-                + '&resultType=json');
-
-            // console.log(response.data.msgBody.itemList)
+            const response = await axios.get(
+                `http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey=${busRouteAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
             if (response.data.msgBody.itemList === null) {
                 return ['null'];
             }
 
             setBusStationList(response.data.msgBody.itemList)
+            console.log('busStationSetted')
             return response.data.msgBody.itemList
         } catch (error) {
             // console.log('!' + error)
@@ -57,61 +53,54 @@ const App = () => {
 
     const getBusLocationList = async () => {
         try {
-            const response = await instance.get(
-                'http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey='
-                + busLocationAPIKey + '&busRouteId='
-                + reservationBusLine.route_id
-                + '&resultType=json');
-
+            const response = await axios.get(
+                `http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey=${busLocationAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
+            // console.log(response.data.msgBody.itemList)
             if (response.data.msgBody.itemList === null) {
                 Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
                 return ['null']
             }
+            const res = response.data.msgBody.itemList
+            setBusLocationList(res)
+            console.log('busLocationLoaded')
+            var tempLocationList = []
+            var tempStopStatusList = []
+            var tempBusArrivalTimeList = []
+            var tempBusCodeList = []
+            var minString = ""
+            var secString = "";
+            res.map(busLocationInfo => {
+                var calculateArrivalTime =
+                    busLocationInfo.nextStTm - (busLocationInfo.nextStTm * (busLocationInfo.sectDist / busLocationInfo.fullSectDist))
+                tempLocationList.push(busLocationInfo.sectOrd)
+                tempStopStatusList.push(busLocationInfo.stopFlag)
+                tempBusCodeList.push(busLocationInfo.plainNo)
+                Math.round(calculateArrivalTime / 60) !== 0 ? minString = Math.round(calculateArrivalTime / 60) + '분' : minString = '0분'
+                Math.round(calculateArrivalTime % 60) !== 0 ? secString = Math.round(calculateArrivalTime % 60) + '초' : secString = '0초'
 
-            setBusLocationList(response.data.msgBody.itemList)
+                minString === '0분' && secString === '0초' ? tempBusArrivalTimeList.push('곧 도착') : tempBusArrivalTimeList.push(minString + ' ' + secString + ' 후 도착')
+            })
+
+            setBusLocationList(tempLocationList);
+            setBusStopStatusList(tempStopStatusList);
+            setBusArrivalTimeList(tempBusArrivalTimeList);
+            setBusCodeList(tempBusCodeList);
+            // console.log("ㄴ" + res)
+            console.log('Location Set')
             return response.data.msgBody.itemList;
+
         } catch (error) {
             //console.log('!!' + error)
             return error
         }
     }
 
-    const getBusLocation = async () => {
-        getBusLocationList()
-            .then(res => {
-                var tempLocationList = []
-                var tempStopStatusList = []
-                var tempBusArrivalTimeList = []
-                var tempBusCodeList = []
-                var minString = ""
-                var secString = "";
-                res.map(busLocationInfo => {
-                    var calculateArrivalTime =
-                        busLocationInfo.nextStTm - (busLocationInfo.nextStTm * (busLocationInfo.sectDist / busLocationInfo.fullSectDist))
-                    tempLocationList.push(busLocationInfo.sectOrd)
-                    tempStopStatusList.push(busLocationInfo.stopFlag)
-                    tempBusCodeList.push(busLocationInfo.plainNo)
-                    Math.round(calculateArrivalTime / 60) !== 0 ? minString = Math.round(calculateArrivalTime / 60) + '분' : minString = '0분'
-                    Math.round(calculateArrivalTime % 60) !== 0 ? secString = Math.round(calculateArrivalTime % 60) + '초' : secString = '0초'
-
-                    minString === '0분' && secString === '0초' ? tempBusArrivalTimeList.push('곧 도착') : tempBusArrivalTimeList.push(minString + ' ' + secString + ' 후 도착')
-                })
-
-                setBusLocationList(tempLocationList);
-                setBusStopStatusList(tempStopStatusList);
-                setBusArrivalTimeList(tempBusArrivalTimeList);
-                setBusCodeList(tempBusCodeList);
-            })
-    }
 
     const getBusLineCompany = async () => {
         try {
             const response = await instance.get(
-                'http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey='
-                + busLocationAPIKey + '&strSrch='
-                + reservationBusLine.route
-                + '&resultType=json');
+                `http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey=${busLocationAPIKey}&strSrch=${reservationBusLine.route}&resultType=json`)
 
             if (response.data.msgBody.itemList === null) {
                 //console.log("운수회사 가져오기 실패")
@@ -120,7 +109,9 @@ const App = () => {
             }
             //console.log(response.data.msgBody.itemList[0].corpNm)
             setBusLineCompany(response.data.msgBody.itemList[0].corpNm)
+            console.log('company set')
             return response.data.msgBody.itemList[0].corpNm
+
         } catch (error) {
             //console.log('!!!' + error)
             return ''
@@ -143,7 +134,7 @@ const App = () => {
                     second = 0
                 }
                 if (second == 0 && minute == 0) {
-                    getBusLocation()
+                    // getBusLocationList()
                 }
                 if (second == 0) {
                     tempList.push((minute - 1) + '분 ' + (parseInt(second) + 59) + '초 후 도착');
@@ -159,31 +150,36 @@ const App = () => {
         return () => clearInterval(intervalId);
     }, [busArrivalTimeList])
 
-
-    useEffect(() => {
-        // setShowLoadingModal(true);
-        getBusLineStopList()
-            .then(res => {
+    const fetchData = async() => {
+        await getBusLineStopList()
+            .then(async res => {
                 // console.log(res)
                 // setBusStationList(res)
-                getBusLocation();
-                getBusLineCompany()
+                await getBusLocationList();
+                await getBusLineCompany()
                     .then(res2 => {
-                        if (res[0] === 'null') setCurrentScreen('main')
+                        if (res[0] === 'null') {
+                            setSw(true)
+                            setCurrentScreen('main')
+                        }
                         else {
-                            if (!sw){
-                                console.log('setting to main')
-                                setSw(true)
-                                return ;
-                            }
                             console.log('LoadingData...')
-                            setBusStationList(res)
-                            setBusLineCompany(res2)
+                            // console.log(res)
+                            // console.log(res2)
+                            // setBusStationList(res)
+                            // setBusLineCompany(res2)
+
+                            // console.log(res2)
                             setCurrentScreen('busLineInfo')
                         }
                         // setShowLoadingModal(false)
                     })
             });
+    }
+
+    useEffect(() => {
+        // setShowLoadingModal(true);
+        fetchData();
 
     }, [intoScreen]);
 
