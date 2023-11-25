@@ -8,7 +8,7 @@ import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
-import axios from "./component/axiosConfig";
+import instance from "./component/axiosConfig";
 import LoadingModal from "./component/LoadingModal";
 
 const App = () => {
@@ -36,7 +36,7 @@ const App = () => {
 
     const getBusLineStopList = async () => {
         try {
-            const response = await axios.get(
+            const response = await instance.get(
                 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey='
                 + busRouteAPIKey + '&busRouteId='
                 + reservationBusLine.route_id
@@ -57,7 +57,7 @@ const App = () => {
 
     const getBusLocationList = async () => {
         try {
-            const response = await axios.get(
+            const response = await instance.get(
                 'http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey='
                 + busLocationAPIKey + '&busRouteId='
                 + reservationBusLine.route_id
@@ -107,7 +107,7 @@ const App = () => {
 
     const getBusLineCompany = async () => {
         try {
-            const response = axios.get(
+            const response = await instance.get(
                 'http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey='
                 + busLocationAPIKey + '&strSrch='
                 + reservationBusLine.route
