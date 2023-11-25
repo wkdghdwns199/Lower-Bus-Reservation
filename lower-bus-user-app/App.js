@@ -21,7 +21,7 @@ const App = () => {
     const [busLineCompany, setBusLineCompany] = useState('')
 
 
-    const [busStationList, setBusStationList] = useState([1,2,3])
+    const [busStationList, setBusStationList] = useState([1, 2, 3])
     const [busLocationList, setBusLocationList] = useState([])
     const [busStopStatusList, setBusStopStatusList] = useState([])
     const [busArrivalTimeList, setBusArrivalTimeList] = useState([]);
@@ -48,7 +48,7 @@ const App = () => {
             }
 
             setBusStationList(response.data.msgBody.itemList)
-            // return response.data.msgBody.itemList
+            return response.data.msgBody.itemList
         } catch (error) {
             //console.log('!' + error)
             return [];
@@ -119,7 +119,7 @@ const App = () => {
             }
             //console.log(response.data.msgBody.itemList[0].corpNm)
             setBusLineCompany(response.data.msgBody.itemList[0].corpNm)
-            // return response.data.msgBody.itemList[0].corpNm
+            return response.data.msgBody.itemList[0].corpNm
         } catch (error) {
             //console.log('!!!' + error)
             return ''
@@ -158,36 +158,28 @@ const App = () => {
     }, [busArrivalTimeList])
 
 
-
     useEffect(() => {
         setShowLoadingModal(true);
         getBusLineStopList()
-                .then(() => {
-                    // console.log(res)
-                    // setBusStationList(res)
-                    getBusLocation();
-                    getBusLineCompany()
-                        .then(res2 => {
-                                sw ? (
-                                         setShowLoadingModal(false),
-                                            //console.log(reservationBusLine),
-                                             setCurrentScreen('busLineInfo')
-                                    ) :
-                                    (
-                                         setShowLoadingModal(false),
-                                            //console.log('reset'),
-                                             setSw(true),
-                                             setCurrentScreen('main'))
-                        })
-                });
+            .then(() => {
+                // console.log(res)
+                // setBusStationList(res)
+                getBusLocation();
+                getBusLineCompany()
+                    .then(res2 => {
+                        sw ?  setCurrentScreen('busLineInfo') : (setCurrentScreen('main'), setSw(true))
+                        setShowLoadingModal(false)
+                            //console.log(reservationBusLine),
+
+                    })
+            });
 
     }, [intoScreen]);
 
 
-
     return (
         <View style={styles.container}>
-             {currentScreen === 'main' &&
+            {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
                             intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
             {currentScreen === 'busReservationList' && <BusReservationListScreen/>}
