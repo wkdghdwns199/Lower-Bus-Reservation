@@ -9,8 +9,8 @@ import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
 
 import LoadingModal from "./component/LoadingModal";
-import instance from "./component/axiosConfig";
-
+// import instance from "./component/axiosConfig";
+import axios from "axios";
 const App = () => {
     const [currentScreen, setCurrentScreen] = useState('main');
     const [reservationBusLine, setReservationBusLine] = useState('');
@@ -36,8 +36,8 @@ const App = () => {
 
     const getBusLineStopList = async () => {
         try {
-            const response = await instance.get(
-                `/api/rest/busRouteInfo/getStaionByRoute?ServiceKey=${busRouteAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
+            const response = await axios.get(
+                `http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?ServiceKey=${busRouteAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
             if (response.data.msgBody.itemList === null) {
                 return ['null'];
             }
@@ -53,8 +53,8 @@ const App = () => {
 
     const getBusLocationList = async () => {
         try {
-            const response = await instance.get(
-                `/api/rest/buspos/getLowBusPosByRtid?ServiceKey=${busLocationAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
+            const response = await axios.get(
+                `http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey=${busLocationAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
             // console.log(response.data.msgBody.itemList)
             if (response.data.msgBody.itemList === null) {
                 Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
@@ -99,8 +99,8 @@ const App = () => {
 
     const getBusLineCompany = async () => {
         try {
-            const response = await instance.get(
-                `/api/rest/busRouteInfo/getBusRouteList?ServiceKey=${busLocationAPIKey}&strSrch=${reservationBusLine.route}&resultType=json`)
+            const response = await axios.get(
+                `http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey=${busLocationAPIKey}&strSrch=${reservationBusLine.route}&resultType=json`)
 
             if (response.data.msgBody.itemList === null) {
                 //console.log("운수회사 가져오기 실패")
