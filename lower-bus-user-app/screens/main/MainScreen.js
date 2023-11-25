@@ -48,7 +48,7 @@ const MainScreen = ({setCurrentScreen, setReservationBusLine, intoScreen, setInt
     }, []);
     return (
         <View style={styles.container}>
-            <Text>{JSON.stringify(busStationList)}</Text>
+            {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
             <View style={styles.busLineList}>
                 <Header title={"버스 노선 "}/>
                 <FlatList

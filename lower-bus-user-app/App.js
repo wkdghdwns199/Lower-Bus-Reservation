@@ -57,7 +57,7 @@ const App = () => {
                 `http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey=${busLocationAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
             // console.log(response.data.msgBody.itemList)
             if (response.data.msgBody.itemList === null) {
-                Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
+                // Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
                 return ['null']
             }
@@ -179,15 +179,22 @@ const App = () => {
 
     useEffect(() => {
         // setShowLoadingModal(true);
-        fetchData();
+        if (!sw){
+            console.log(sw)
+            setSw(true)
+        }
+        else{
+            fetchData();
+        }
+
 
     }, [intoScreen]);
 
 
     return (
         <View style={styles.container}>
-            <Text>{busRouteAPIKey}</Text>
-            <Text>{busLocationAPIKey}</Text>
+            {/*<Text>{busRouteAPIKey}</Text>*/}
+            {/*<Text>{busLocationAPIKey}</Text>*/}
             {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
                             intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
