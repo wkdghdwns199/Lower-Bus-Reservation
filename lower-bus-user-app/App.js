@@ -47,8 +47,8 @@ const App = () => {
                 return [];
             }
 
-            // setBusStationList(response.data.msgBody.itemList)
-            return response.data.msgBody.itemList
+            setBusStationList(response.data.msgBody.itemList)
+            // return response.data.msgBody.itemList
         } catch (error) {
             //console.log('!' + error)
             return [];
@@ -118,7 +118,8 @@ const App = () => {
                 setBusLocationList('')
             }
             //console.log(response.data.msgBody.itemList[0].corpNm)
-            return response.data.msgBody.itemList[0].corpNm
+            setBusLineCompany(response.data.msgBody.itemList[0].corpNm)
+            // return response.data.msgBody.itemList[0].corpNm
         } catch (error) {
             //console.log('!!!' + error)
             return ''
@@ -156,43 +157,29 @@ const App = () => {
         return () => clearInterval(intervalId);
     }, [busArrivalTimeList])
 
+
+
     useEffect(() => {
-        const fetchData = async () => {
-            setShowLoadingModal(true);
-            try {
-                await getBusLineStopList()
-                    .then(res => {
-                        // console.log(res)
-                        setBusStationList(res)
-
-                    });
-                await getBusLocation();
-
-                await getBusLineCompany()
-                    .then(res => setBusLineCompany(res))
-
-                //console.log('DATA SET COMPLETE')
-                return true;
-            } catch (error) {
-                return false;
-            }
-        }
-
-         fetchData()
-            .then(async () => {
-                sw ? (
-                        await setShowLoadingModal(false),
-                            //console.log(reservationBusLine),
-                            setTimeout(() => {
-                                setCurrentScreen('busLineInfo')
-                            }, 3000)
-                    ) :
-                    (
-                        await setShowLoadingModal(false),
-                            //console.log('reset'),
-                        await setSw(true),
-                        await setCurrentScreen('main'))
-            })
+        setShowLoadingModal(true);
+        getBusLineStopList()
+                .then(() => {
+                    // console.log(res)
+                    // setBusStationList(res)
+                    getBusLocation();
+                    getBusLineCompany()
+                        .then(res2 => {
+                                sw ? (
+                                         setShowLoadingModal(false),
+                                            //console.log(reservationBusLine),
+                                             setCurrentScreen('busLineInfo')
+                                    ) :
+                                    (
+                                         setShowLoadingModal(false),
+                                            //console.log('reset'),
+                                             setSw(true),
+                                             setCurrentScreen('main'))
+                        })
+                });
 
     }, [intoScreen]);
 
@@ -200,7 +187,7 @@ const App = () => {
 
     return (
         <View style={styles.container}>
-            {currentScreen === 'main' &&
+             {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
                             intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
             {currentScreen === 'busReservationList' && <BusReservationListScreen/>}

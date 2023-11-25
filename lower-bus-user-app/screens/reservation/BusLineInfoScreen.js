@@ -85,7 +85,7 @@ const BusLineInfoScreen = ({
             <Header title={reservationBusLine.route}/>
 
             <ScrollView style={styles.busLineList}>
-                <Text>{JSON.stringify(busStationList)}</Text>
+                {/*<Text>{JSON.stringify(busStationList)}</Text>*/}
                 {
                     busStationList.map(item => (
                         <Pressable style={styles.itemContainer} onPress={() => {
