@@ -171,6 +171,11 @@ const App = () => {
                     .then(res2 => {
                         if (res[0] === 'null') setCurrentScreen('main')
                         else {
+                            if (!sw){
+                                console.log('setting to main')
+                                setSw(true)
+                                return ;
+                            }
                             console.log('LoadingData...')
                             setBusStationList(res)
                             setBusLineCompany(res2)
