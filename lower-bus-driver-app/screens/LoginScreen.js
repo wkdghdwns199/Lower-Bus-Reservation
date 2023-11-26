@@ -1,14 +1,15 @@
 // HomeScreen.js
 import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet, TextInput, Pressable, Alert} from 'react-native';
+import {View, Text, Button, StyleSheet, TextInput, Pressable, Alert, BackHandler} from 'react-native';
 import CheckBox from 'expo-checkbox'
 import {supabase} from "../lib/supabase";
 import * as Crypto from "expo-crypto";
 import {getData, storeData } from "../lib/asyncStorage";
 import {useIsFocused} from "@react-navigation/native";
 
-function LoginScreen({ navigation }) {
 
+function LoginScreen({ navigation }) {
+    const isFocused = useIsFocused()
     const [id,setId] = useState('');
     const [pw, setPw] = useState('');
 
@@ -48,7 +49,27 @@ function LoginScreen({ navigation }) {
                 setId(JSON.parse(res))})
 
         setPw('')
-    }, [useIsFocused()]);
+    }, [isFocused]);
+
+    useEffect(() => {
+        const backAction = () => {
+            Alert.alert(
+                '종료',
+                '앱을 종료하시겠습니까?',
+                [{text:'확인', onPress:() => {
+                        BackHandler.exitApp()
+                    }}, {text:'취소', style:'cancel'}]
+            )
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => {
+            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+            backHandler.remove();
+        };
+    },[])
 
     return (
         <View style={styles.container}>
