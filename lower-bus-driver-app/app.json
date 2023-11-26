@@ -32,6 +32,14 @@
         "projectId": "45ebb1eb-d56b-4e07-a170-0498220b5a61"
       }
     },
-    "owner": "q-noze"
+    "owner": "q-noze",
+    "plugins": [
+      ["expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }]
+    ]
   }
 }
