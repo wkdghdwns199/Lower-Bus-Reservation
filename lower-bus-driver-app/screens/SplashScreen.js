@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {View, Text, StyleSheet} from "react-native";
 import {getData} from "../lib/asyncStorage";
-import {get} from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const SplashScreen = ({ navigation }) => {
 

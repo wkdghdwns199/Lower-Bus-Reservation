@@ -51,8 +51,8 @@ const BusReservationListScreen = ({route, navigation}) => {
     )
 
     useEffect( () => {
-        console.log('버스 예약 리스트 ' + busReservationList.length)
-        console.log('현재 카운트 ' + currentCountList)
+        //console.log('버스 예약 리스트 ' + busReservationList.length)
+        //console.log('현재 카운트 ' + currentCountList)
         if (currentCountList !== busReservationList.length){
             if (currentCountList < busReservationList.length){
                 const station = busReservationList[0].reservation_starting_point

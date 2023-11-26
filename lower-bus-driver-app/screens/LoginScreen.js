@@ -17,11 +17,11 @@ function LoginScreen({ navigation }) {
     const loginHandle = async () => {
 
         if (idRemember) {
-            console.log('remembered')
+            //console.log('remembered')
             storeData('initialId' , id)
         }
         if (autoLogin) {
-            console.log('auto')
+            //console.log('auto')
             storeData('autoId', id)
             storeData('autoLogin', 'true')
         }
