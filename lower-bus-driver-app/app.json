@@ -35,11 +35,11 @@
     "owner": "q-noze",
     "plugins": [
       ["expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          }
-        }]
+      {
+        "android": {
+          "usesCleartextTraffic": true
+        }
+      }]
     ]
   }
 }
