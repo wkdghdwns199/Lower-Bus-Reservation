@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import LoginScreen from './screens/LoginScreen';
+import LoggedScreen from './screens/LoggedScreen';
+import JoinProcessNavigation from "./screens/join/JoinProcessNavigation";
+import SplashScreen from "./screens/SplashScreen";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>This is a test for IOS</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName= "SplashScreen" screenOptions={{headerShown: false}}>
+                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+                <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+                <Stack.Screen name="LoggedScreen" component={LoggedScreen}/>
+                <Stack.Screen name="JoinProcessNavigation" component={JoinProcessNavigation}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}

@@ -19,9 +19,6 @@
       "bundleIdentifier": "com.qnoze.lowerbususerapp"
     },
     "android": {
-      "config": {
-        "usesCleartextTraffic": true
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -36,6 +33,14 @@
         "projectId": "c6b84b60-f53a-402b-bc27-3f71acf74e56"
       }
     },
-    "owner": "q-noze"
+    "owner": "q-noze",
+    "plugins": [
+      ["expo-build-properties",
+      {
+        "android": {
+          "usesCleartextTraffic": true
+        }
+      }]
+    ]
   }
 }

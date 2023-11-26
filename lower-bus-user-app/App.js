@@ -7,9 +7,8 @@ import BusReservationListScreen from "./screens/history/BusReservationListScreen
 import BusLineInfoScreen from "./screens/reservation/BusLineInfoScreen";
 import BusReservationScreen from "./screens/reservation/BusReservationScreen";
 import BusDepartureScreen from "./screens/departure/BusDepartureScreen";
-
 import LoadingModal from "./component/LoadingModal";
-// import instance from "./component/axiosConfig";
+
 import axios from "axios";
 const App = () => {
     const [currentScreen, setCurrentScreen] = useState('main');
@@ -30,6 +29,7 @@ const App = () => {
     const [sw, setSw] = useState(false);
     const [intoScreen, setIntoScreen] = useState(false);
     const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [messageText, setMessageText] = useState([])
 
     const busRouteAPIKey = process.env.EXPO_PUBLIC_BUS_ROUTE_API_KEY;
     const busLocationAPIKey = process.env.EXPO_PUBLIC_BUS_LOCATION_API_KEY;
@@ -43,7 +43,7 @@ const App = () => {
             }
 
             setBusStationList(response.data.msgBody.itemList)
-            console.log('busStationSetted')
+            // console.log('busStationSetted')
             return response.data.msgBody.itemList
         } catch (error) {
             // console.log('!' + error)
@@ -55,7 +55,7 @@ const App = () => {
         try {
             const response = await axios.get(
                 `http://ws.bus.go.kr/api/rest/buspos/getLowBusPosByRtid?ServiceKey=${busLocationAPIKey}&busRouteId=${reservationBusLine.route_id}&resultType=json`)
-            // console.log(response.data.msgBody.itemList)
+            // console.log(response.data.msgBo  dy.itemList)
             if (response.data.msgBody.itemList === null) {
                 // Alert.alert('운행 종료', '금일 저상 버스 운행이 종료된 노선입니다.')
                 setBusLocationList([])
@@ -63,7 +63,7 @@ const App = () => {
             }
             const res = response.data.msgBody.itemList
             setBusLocationList(res)
-            console.log('busLocationLoaded')
+            // console.log('busLocationLoaded')
             var tempLocationList = []
             var tempStopStatusList = []
             var tempBusArrivalTimeList = []
@@ -87,7 +87,7 @@ const App = () => {
             setBusArrivalTimeList(tempBusArrivalTimeList);
             setBusCodeList(tempBusCodeList);
             // console.log("ㄴ" + res)
-            console.log('Location Set')
+            // console.log('Location Set')
             return response.data.msgBody.itemList;
 
         } catch (error) {
@@ -109,7 +109,7 @@ const App = () => {
             }
             //console.log(response.data.msgBody.itemList[0].corpNm)
             setBusLineCompany(response.data.msgBody.itemList[0].corpNm)
-            console.log('company set')
+            // console.log('company set')
             return response.data.msgBody.itemList[0].corpNm
 
         } catch (error) {
@@ -153,17 +153,19 @@ const App = () => {
     const fetchData = async() => {
         await getBusLineStopList()
             .then(async res => {
+                setMessageText(JSON.stringify(res));
                 // console.log(res)
                 // setBusStationList(res)
-                await getBusLocationList();
+                await getBusLocationList()
                 await getBusLineCompany()
                     .then(res2 => {
+                        setMessageText(JSON.stringify(res2))
                         if (res[0] === 'null') {
                             setSw(true)
                             setCurrentScreen('main')
                         }
                         else {
-                            console.log('LoadingData...')
+                            // console.log('LoadingData...')
                             // console.log(res)
                             // console.log(res2)
                             // setBusStationList(res)
@@ -172,16 +174,17 @@ const App = () => {
                             // console.log(res2)
                             setCurrentScreen('busLineInfo')
                         }
-                        // setShowLoadingModal(false)
+                        setShowLoadingModal(false)
                     })
             });
     }
 
     useEffect(() => {
-        // setShowLoadingModal(true);
+        setShowLoadingModal(true);
         if (!sw){
-            console.log(sw)
+            // console.log(sw)
             setSw(true)
+            setShowLoadingModal(false)
         }
         else{
             fetchData();
@@ -195,6 +198,7 @@ const App = () => {
         <View style={styles.container}>
             {/*<Text>{busRouteAPIKey}</Text>*/}
             {/*<Text>{busLocationAPIKey}</Text>*/}
+            {/*<Text>{messageText}</Text>*/}
             {currentScreen === 'main' &&
                 <MainScreen setCurrentScreen={setCurrentScreen} setReservationBusLine={setReservationBusLine}
                             intoScreen={intoScreen} setIntoScreen={setIntoScreen} busStationList={busStationList}/>}
@@ -221,7 +225,7 @@ const App = () => {
                                     reservationBusCode={reservationBusCode}
                                     setReservationUUID={setReservationUUID} reservationUUID={reservationUUID}/>}
 
-            {/*{showLoadingModal && <LoadingModal/>}*/}
+            {showLoadingModal && <LoadingModal/>}
 
         </View>
     );
