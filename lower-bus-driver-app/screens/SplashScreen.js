@@ -12,16 +12,14 @@ const SplashScreen = ({ navigation }) => {
             const autoId = await getData('autoId');
             navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
         }
-    };
-
+    }
     useEffect(() => {
-        const navigateWithDelay = async () => {
-            setTimeout(async () => {
-                await selectNavigate();
-            }, 3000);
-        };
-
-        navigateWithDelay();
+        const timeoutId = setTimeout( () => {
+            selectNavigate()
+        }, 3000);
+        return () => {
+            clearTimeout(timeoutId)
+        }
     }, []);
 
     return (
