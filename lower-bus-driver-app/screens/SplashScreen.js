@@ -3,16 +3,25 @@ import {View, Text, StyleSheet, Image} from "react-native";
 import { getData } from "../lib/asyncStorage";
 
 const SplashScreen = ({ navigation }) => {
+
+    const selectNavigate = async () => {
+        const autoLogin = await getData('autoLogin');
+        if (JSON.parse(autoLogin) !== 'true') {
+            navigation.navigate('LoginScreen');
+        } else {
+            const autoId = await getData('autoId');
+            navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
+        }
+    };
+
     useEffect(() => {
-        setTimeout(async () => {
-            const autoLogin = await getData('autoLogin');
-            if (JSON.parse(autoLogin) !== 'true') {
-                navigation.navigate('LoginScreen');
-            } else {
-                const autoId = await getData('autoId');
-                navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
-            }
-        }, 3000);
+        const navigateWithDelay = async () => {
+            setTimeout(async () => {
+                await selectNavigate();
+            }, 3000);
+        };
+
+        navigateWithDelay();
     }, []);
 
     return (
