@@ -1,5 +1,5 @@
-import {Alert, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
-import React ,{useState} from "react";
+import {Alert, BackHandler, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import React, {useEffect, useState} from "react";
 import {supabase} from "../../lib/supabase";
 import {removeData} from "../../lib/asyncStorage";
 
@@ -38,6 +38,27 @@ const BusRegisterScreen = ({route, navigation}) => {
         logoutRoute.navigate('LoginScreen')
     }
 
+
+    useEffect(() => {
+        const backAction = () => {
+            Alert.alert(
+                '종료',
+                '앱을 종료하시겠습니까?',
+                [{text:'확인', onPress:() => {
+                        BackHandler.exitApp()
+                    }}, {text:'취소', style:'cancel'}]
+            )
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => {
+            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+            backHandler.remove();
+        };
+
+    },[])
 
     return(
         <View style={styles.container}>

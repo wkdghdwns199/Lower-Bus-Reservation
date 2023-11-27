@@ -15,26 +15,6 @@ const Stack = createStackNavigator();
 function LoggedScreen({route, navigation}) {
     const {id} = route.params;
 
-    useEffect(() => {
-        const backAction = () => {
-            Alert.alert(
-                '종료',
-                '앱을 종료하시겠습니까?',
-                [{text:'확인', onPress:() => {
-                        BackHandler.exitApp()
-                    }}, {text:'취소', style:'cancel'}]
-            )
-            return true;
-        };
-
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-        return () => {
-            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
-            backHandler.remove();
-        };
-
-    },[])
 
     return (
         <NavigationContainer independent={true}>
