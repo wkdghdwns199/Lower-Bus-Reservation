@@ -4,23 +4,23 @@ import { getData } from "../lib/asyncStorage";
 
 const SplashScreen = ({ navigation }) => {
 
-    const selectNavigate = async () => {
-        const autoLogin = await getData('autoLogin');
-        if (JSON.parse(autoLogin) !== 'true') {
-            navigation.navigate('LoginScreen');
-        } else {
-            const autoId = await getData('autoId');
-            navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
-        }
-    }
-    useEffect(() => {
-        const timeoutId = setTimeout( () => {
-            selectNavigate()
-        }, 3000);
-        return () => {
-            clearTimeout(timeoutId)
-        }
-    }, []);
+    // const selectNavigate = async () => {
+    //     const autoLogin = await getData('autoLogin');
+    //     if (JSON.parse(autoLogin) !== 'true') {
+    //         navigation.navigate('LoginScreen');
+    //     } else {
+    //         const autoId = await getData('autoId');
+    //         navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
+    //     }
+    // }
+    // useEffect(() => {
+    //     const timeoutId = setTimeout( () => {
+    //         selectNavigate()
+    //     }, 3000);
+    //     return () => {
+    //         clearTimeout(timeoutId)
+    //     }
+    // }, []);
 
     return (
         <View style={styles.container}>
