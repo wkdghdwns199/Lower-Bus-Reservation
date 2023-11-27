@@ -1,26 +1,9 @@
-import { useEffect } from "react";
-import {View, Text, StyleSheet, Image} from "react-native";
-import { getData } from "../lib/asyncStorage";
 
-const SplashScreen = ({ navigation }) => {
+import {View, StyleSheet, Image} from "react-native";
 
-    // const selectNavigate = async () => {
-    //     const autoLogin = await getData('autoLogin');
-    //     if (JSON.parse(autoLogin) !== 'true') {
-    //         navigation.navigate('LoginScreen');
-    //     } else {
-    //         const autoId = await getData('autoId');
-    //         navigation.navigate('LoggedScreen', { id: JSON.parse(autoId) });
-    //     }
-    // }
-    // useEffect(() => {
-    //     const timeoutId = setTimeout( () => {
-    //         selectNavigate()
-    //     }, 3000);
-    //     return () => {
-    //         clearTimeout(timeoutId)
-    //     }
-    // }, []);
+
+const SplashScreen = () => {
+
 
     return (
         <View style={styles.container}>

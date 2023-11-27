@@ -1,24 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen';
-import LoggedScreen from './screens/LoggedScreen';
-import JoinProcessNavigation from "./screens/join/JoinProcessNavigation";
+import React from "react";
 import SplashScreen from "./screens/SplashScreen";
+import NavigationScreen from "./screens/NavigationScreen"
+import 'react-native-url-polyfill/auto';
 
-const Stack = createStackNavigator();
-
-export default function App() {
-
-
-    return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName= "SplashScreen" screenOptions={{headerShown: false}}>
-                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
-                <Stack.Screen name="LoginScreen" component={LoginScreen}/>
-                <Stack.Screen name="LoggedScreen" component={LoggedScreen}/>
-                <Stack.Screen name="JoinProcessNavigation" component={JoinProcessNavigation}/>
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+export default class extends React.Component {
+    state={
+        isLoading : true
+    };
+    componentDidMount= async() => {
+        setTimeout(() => {this.setState({isLoading: false})}, 3000);
+    }
+    render() {
+        if (this.state.isLoading) {
+            return <SplashScreen/>
+        }
+        else {
+            return <NavigationScreen/>;
+        }
+    }
 }

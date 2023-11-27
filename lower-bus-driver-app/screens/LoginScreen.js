@@ -9,6 +9,7 @@ import {useIsFocused} from "@react-navigation/native";
 
 
 function LoginScreen({ navigation }) {
+
     const isFocused = useIsFocused()
     const [id,setId] = useState('');
     const [pw, setPw] = useState('');
