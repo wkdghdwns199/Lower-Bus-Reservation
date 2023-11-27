@@ -41,7 +41,17 @@ function LoginScreen({ navigation }) {
             .eq('bus_driver_id', id)
             .eq('bus_driver_pw', await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, pw))
 
+
         if (data.length !== 0 ){
+            if (data[0].bus_driver_auth_status === 'false'){
+                Alert.alert('계정 검증', '계정이 검증 중이오니 기다려주시기 바랍니다!')
+                return ;
+            }
+            else if (data[0].bus_driver_auth_status === 'reject'){
+                Alert.alert('계정 인증 거절', '계정 인증이 거절되었습니다. 관리자에게 문의 바랍니다!')
+                return ;
+            }
+
             navigation.navigate('LoggedScreen', {id:id})
         }
         else {
@@ -145,7 +155,7 @@ const styles = StyleSheet.create({
         marginBottom:30,
     },
     inputStyle: {
-        width:200,
+        width:'80%',
         height:40,
         position:'absolute',
         right:0,

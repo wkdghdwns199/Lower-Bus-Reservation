@@ -1,9 +1,26 @@
-import {View, Text, StyleSheet, Pressable} from "react-native";
-import {useState} from "react";
+import {View, Text, StyleSheet, Pressable, BackHandler} from "react-native";
+import {useEffect, useState} from "react";
 import CheckBox from "expo-checkbox";
 import React from "react";
 
-const AgreementScreen = ({navigation}) => {
+const AgreementScreen = ({route, navigation}) => {
+
+    const {backToLoginScreen} = route.params;
+
+    useEffect(() => {
+        const backAction = () => {
+            backToLoginScreen.navigate('LoginScreen')
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => {
+            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+            backHandler.remove();
+        };
+    },[])
+
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
     return (

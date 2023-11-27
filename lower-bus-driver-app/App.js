@@ -2,9 +2,20 @@ import React from "react";
 import SplashScreen from "./screens/SplashScreen";
 import NavigationScreen from "./screens/NavigationScreen"
 import 'react-native-url-polyfill/auto';
+import {View, StyleSheet} from "react-native";
 
-export default function App() {
+const App = () => {
     return (
-        <NavigationScreen/>
+        <View style={styles.container}>
+            <NavigationScreen/>
+        </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container:{
+        flex:1,
+    }
+})
+
+export default App
