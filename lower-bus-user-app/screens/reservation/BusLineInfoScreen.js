@@ -42,9 +42,13 @@ const BusLineInfoScreen = ({
         while (--reserveLoc) {
             if (busLocationList.includes(reserveLoc.toString())) {
                 // console.log(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
-                setStartStation(stationNm)
-                setReservationBusCode(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
-                setShowReservationModal(true);
+                // setStartStation(stationNm)
+                // setReservationBusCode(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
+                // setShowReservationModal(true);
+
+                setStartStation(item.stationNm)
+                setReservationBusCode('서울42사2034')
+                setShowReservationModal(true)
                 return;
             }
         }
@@ -91,10 +95,10 @@ const BusLineInfoScreen = ({
                 {
                     busStationList.map(item => (
                         <Pressable style={styles.itemContainer} onPress={() => {
-   //                         findRunningBus(item.seq, item.stationNm)
-                            setStartStation(item.stationNm)
-                            setReservationBusCode('서울42사2034')
-                            setShowReservationModal(true)
+                           findRunningBus(item.seq, item.stationNm)
+                            // setStartStation(item.stationNm)
+                            // setReservationBusCode('서울42사2034')
+                            // setShowReservationModal(true)
                         }} key={item.seq}>
 
                             {busLocationList.includes(item.seq) ? (
