@@ -23,7 +23,7 @@ function BusRegisterModal({setBusRegisterModalStatus, updateBusList}) {
             alert('이미 등록된 차량 코드입니다!');
             console.error('데이터 입력오류:', error.message);
         }
-        alert('버스가 등록되었습니디!');
+        alert('버스가 등록되었습니다!');
         setBusRegisterModalStatus(false);
         updateBusList();
     }
