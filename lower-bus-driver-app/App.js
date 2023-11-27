@@ -7,15 +7,10 @@ export default class extends React.Component {
     state={
         isLoading : true
     };
-    componentDidMount= async() => {
-        setTimeout(() => {this.setState({isLoading: false})}, 3000);
-    }
+    // componentDidMount= async() => {
+    //     setTimeout(() => {this.setState({isLoading: false})}, 3000);
+    // }
     render() {
-        if (this.state.isLoading) {
-            return <SplashScreen/>
-        }
-        else {
-            return <NavigationScreen/>;
-        }
+        return <NavigationScreen/>
     }
 }
