@@ -14,7 +14,8 @@ const BusLineInfoScreen = ({
                                busArrivalTimeList,
                                busCodeList,
                                 intoScreen,
-                                setIntoScreen
+                                setIntoScreen,
+                                busFullStatusList,
                            }) => {
 
 
@@ -46,7 +47,7 @@ const BusLineInfoScreen = ({
                 // setReservationBusCode(busCodeList[busLocationList.indexOf(reserveLoc.toString())]);
                 // setShowReservationModal(true);
 
-                setStartStation(item.stationNm)
+                setStartStation(stationNm)
                 setReservationBusCode('서울42사2034')
                 setShowReservationModal(true)
                 return;
@@ -101,7 +102,7 @@ const BusLineInfoScreen = ({
                             // setShowReservationModal(true)
                         }} key={item.seq}>
 
-                            {busLocationList.includes(item.seq) ? (
+                            {(busLocationList.includes(item.seq) && busFullStatusList[busLocationList.indexOf(item.seq)]) ? (
                                 <Image source={require('../../images/busIcon.png')}
                                        style={{
                                            backgroundColor: 'white',

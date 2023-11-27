@@ -19,6 +19,7 @@ const App = () => {
     const [reservationUUID, setReservationUUID] = useState('');
     const [busLineCompany, setBusLineCompany] = useState('')
 
+    const [busFullStatusList, setBusFullStatusList] = useState('')
 
     const [busStationList, setBusStationList] = useState([1, 2, 3])
     const [busLocationList, setBusLocationList] = useState([])
@@ -68,6 +69,7 @@ const App = () => {
             var tempStopStatusList = []
             var tempBusArrivalTimeList = []
             var tempBusCodeList = []
+            var tempFullStatusList = []
             var minString = ""
             var secString = "";
             res.map(busLocationInfo => {
@@ -76,6 +78,7 @@ const App = () => {
                 tempLocationList.push(busLocationInfo.sectOrd)
                 tempStopStatusList.push(busLocationInfo.stopFlag)
                 tempBusCodeList.push(busLocationInfo.plainNo)
+                tempFullStatusList.push(busLocationInfo.isFullFlag)
                 Math.round(calculateArrivalTime / 60) !== 0 ? minString = Math.round(calculateArrivalTime / 60) + '분' : minString = '0분'
                 Math.round(calculateArrivalTime % 60) !== 0 ? secString = Math.round(calculateArrivalTime % 60) + '초' : secString = '0초'
 
@@ -84,6 +87,7 @@ const App = () => {
 
             setBusLocationList(tempLocationList);
             setBusStopStatusList(tempStopStatusList);
+            setBusFullStatusList(tempFullStatusList);
             setBusArrivalTimeList(tempBusArrivalTimeList);
             setBusCodeList(tempBusCodeList);
             // console.log("ㄴ" + res)
@@ -134,7 +138,7 @@ const App = () => {
                     second = 0
                 }
                 if (second == 0 && minute == 0) {
-                    // getBusLocationList()
+                    getBusLocationList()
                 }
                 if (second == 0) {
                     tempList.push((minute - 1) + '분 ' + (parseInt(second) + 59) + '초 후 도착');
@@ -213,7 +217,7 @@ const App = () => {
                                    busLocationList={busLocationList}
                                    busArrivalTimeList={busArrivalTimeList} busCodeList={busCodeList}
                                    setBusCodeList={setBusCodeList} intoScreen={intoScreen}
-                                   setIntoScreen={setIntoScreen}/>}
+                                   setIntoScreen={setIntoScreen} busFullStatusList = {busFullStatusList}/>}
             {showReservationModal &&
                 <BusReservationScreen setCurrentScreen={setCurrentScreen} reservationBusLine={reservationBusLine}
                                       reservationBusCode={reservationBusCode} startStation={startStation}
