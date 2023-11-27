@@ -4,6 +4,8 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import {supabase} from "../../lib/supabase";
 
 const UserInfoScreen = ({navigation}) => {
+
+
     const [name, setName] = useState('')
     const [birth, setBirth] = useState('')
     const [company, setCompany] = useState('')
@@ -29,7 +31,7 @@ const UserInfoScreen = ({navigation}) => {
         'birth' : birth,
         'company' : company,
         'license' : license,
-        'phone' : phone
+        'phone' : phone,
     }
 
     const checkLicense = async () => {

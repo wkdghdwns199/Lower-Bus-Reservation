@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {supabase} from "../../lib/supabase";
 import * as Crypto from 'expo-crypto'
 
-const PasswordScreen = ({route, navigation}) => {
+const PasswordScreen = ({route}) => {
 
     const {registerInfo, backToLoginScreen} = route.params;
 
