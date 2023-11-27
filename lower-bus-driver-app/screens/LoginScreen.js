@@ -4,7 +4,7 @@ import {View, Text, Button, StyleSheet, TextInput, Pressable, Alert, BackHandler
 import CheckBox from 'expo-checkbox'
 import {supabase} from "../lib/supabase";
 import * as Crypto from "expo-crypto";
-import {getData, storeData } from "../lib/asyncStorage";
+import {getData, storeData, removeData } from "../lib/asyncStorage";
 import {useIsFocused} from "@react-navigation/native";
 
 
@@ -21,10 +21,17 @@ function LoginScreen({ navigation }) {
             //console.log('remembered')
             storeData('initialId' , id)
         }
+        else {
+            removeData('initialId');
+        }
         if (autoLogin) {
             //console.log('auto')
             storeData('autoId', id)
             storeData('autoLogin', 'true')
+        }
+        else {
+            removeData('autoId')
+            removeData('autoLogin')
         }
 
         const {data, error} = await supabase
